@@ -25,7 +25,10 @@ let logs = [];
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.action == "search"){
-            let results = search(request.keyword);
+            let results = {
+                action: 'search',
+                results: search(request.keyword)
+            };
 
             //Send back to popup.js the number of results
             chrome.runtime.sendMessage(results);
@@ -36,6 +39,15 @@ chrome.runtime.onMessage.addListener(
 //#endregion
 
 //#region Populate Logs
+
+window.addEventListener('load', () => {
+    generateNames();
+    generateButtons();
+});
+
+window.addEventListener('beforeunload', () => {
+    chrome.runtime.sendMessage('unready');
+});
 
 async function populateLogs(){
     await sleep(1000);
@@ -82,9 +94,9 @@ function search(keyword){
     logs.forEach(log => {
 
         //Mark text
-        if (log.data.includes(keyword)){
+        if (keyword != "" && log.data.includes(keyword)){
             log.element.style.background = 'rgb(147, 123, 206)';
-            log.element.style.border = '2px dashed black';
+            log.element.style.border = '1px dashed black';
             count++;
         }
 
@@ -112,7 +124,7 @@ async function sleep(ms){
 
 //Main function
 function main(){
-    populateLogs();
+    //populateLogs();
 }
 
 //#endregion

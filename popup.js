@@ -24,15 +24,10 @@ btn_search.addEventListener('click', () => {
 
 //#endregion
 
-//#region Communication with 'content.js'
+//#region Communication
 
 //Send a message to 'content.js'
 function sendMessage(action){
-
-    //Make sure the keyword input isn't empty
-    if (input_keyword.value == ""){
-        return;
-    }
 
     let msg;
 
@@ -43,30 +38,55 @@ function sendMessage(action){
         };
     }
 
-    //Send a message
+    //Send the message
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
         chrome.tabs.sendMessage(tabs[0].id, msg);
     });
 }
 
-//Listen for messages from content.js
+//Upon opening the popup, check if ready
+chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+
+    let activeTab = tabs[0].id;
+    let msg = {
+        action: 'popup',
+        id: activeTab
+    };
+    chrome.runtime.sendMessage(msg);
+ });
+
+//Listen for messages
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
 
         //Data is ready, enable button
-        if (request == 'ready'){
-            p_result.style.display = 'inline';
-            input_keyword.style.display = 'inline';
-            btn_search.style.display = 'inline';
-            container.style.display = 'flex';
-            container.style.flexDirection = 'column';
-            loader.remove();
+        if (request == 'dataIsReady'){
+            ready();
         }
 
         //Make a search
-        else{
-            p_result.innerHTML = `Results: ${request}`;
+        else if (request.action == 'search'){
+            p_result.innerHTML = `Results: ${request.results}`;
+        }
+
+        //Close the popup
+        else if (request == 'unready'){
+            window.close();
         }
 });
+
+//#endregion
+
+//#region Helper functions
+
+//Get ready
+function ready(){
+    p_result.style.display = 'inline';
+    input_keyword.style.display = 'inline';
+    btn_search.style.display = 'inline';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    loader.remove();
+}
 
 //#endregion

@@ -9,22 +9,29 @@ body{
 }
 
 #container{
-    width: 190px;
-    height: 100px;
+    text-align: center;
+    width: 260px;
+    height: 220px;
+}
+
+#logo{
+    margin-top: 0.5rem;
+    width: 75px;
+    height: 75px;
 }
 
 h1{
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: white;
-    margin-top: 0.75rem;
-    margin-bottom: 1rem;
-    text-align: center;
+    margin-top: 0.8rem;
+    margin-bottom: 0.75rem;
 }
 
 #p_result{
     font-weight: bold;
     font-size: 1.2rem;
     display: none;
+    color: white;
 }
 
 #search_container{
@@ -44,13 +51,14 @@ button{
     display: none;
     margin-top: 0.5rem;
     border-radius: 5px;
-    width: 120px;
+    font-size: 1.2rem;
+    width: 150px;
     cursor: pointer;
 }
 
 input{
     display: none;
-    border-radius: 1px;
+    border-radius: 2px;
     width: 90px;
     cursor: text;
     margin-bottom: 0.5rem;
@@ -62,8 +70,8 @@ button:hover, input:hover{
 
 /* Loading spinner */
 #loader {
-    border-top: 8px solid blue;
-    border-right: 8px solid green;
+    border-top: 8px solid red;
+    border-right: 8px solid pink;
     border-bottom: 8px solid red;
     border-left: 8px solid pink;
     border-radius: 50%;
