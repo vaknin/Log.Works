@@ -1,0 +1,31 @@
+{
+    "manifest_version": 2,
+    "name": "Session Assistant",
+    "description": "Manage and troubleshoot sessions with ease.",
+    "version": "1.0",
+    "content_scripts": [
+      {
+        "matches": [
+          "*://logs.travolutionary.com/Session/*"
+        ],
+        "js": ["content.js"]
+      }
+    ],
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+    },
+    "browser_action": {
+      "default_icon": "icon.png",
+      "default_popup": "popup.html",
+      "default_title": "Download the whole session and search for a specific text!"
+    },
+    "icons":{
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    },
+    "permissions": [
+      "activeTab"
+    ]
+  }
