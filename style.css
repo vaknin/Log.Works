@@ -1,7 +1,8 @@
-@import url('https://fonts.googleapis.com/css?family=Raleway&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,400');
 
 body{
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
     margin: 0;
     user-select: none;
     background: rgb(221, 37, 37);
@@ -11,20 +12,21 @@ body{
 #container{
     text-align: center;
     width: 260px;
-    height: 220px;
+    height: 260px;
 }
 
 #logo{
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     width: 75px;
     height: 75px;
 }
 
 h1{
+    font-weight: 400;
     font-size: 2rem;
     color: white;
-    margin-top: 0.8rem;
-    margin-bottom: 0.75rem;
+    margin-top: 1rem;
+    margin-bottom: 1.35rem;
 }
 
 #p_result{
@@ -34,33 +36,51 @@ h1{
 }
 
 #search_container{
-    position: relative;
     text-align: center;
 }
 
+#sensetivity_container{
+    position: absolute;
+    left: 85px;
+    top: 172px;
+    text-align: center;
+    z-index: 1;
+}
+
+#cbox_cs_label{
+    color: white;
+    display: none;
+    margin-bottom: 2rem;
+}
+
+#cbox_cs{
+    display: none;
+}
+
 button, input{
+    background: white;
     margin: auto;
     padding: 0.4rem;
     border: 0;
-    margin-bottom: 1.5rem;
     transition: background 0.2s ease-in;
 }
 
 button{
     display: none;
-    margin-top: 0.5rem;
+    margin-bottom: 1rem;
     border-radius: 5px;
-    font-size: 1.2rem;
+    font-size: 1.65rem;
+    font-weight: 100;
     width: 150px;
     cursor: pointer;
 }
 
-input{
+#input_keyword{
     display: none;
+    margin-top: 1.3rem;
     border-radius: 2px;
     width: 90px;
     cursor: text;
-    margin-bottom: 0.5rem;
 }
 
 button:hover, input:hover{
@@ -69,18 +89,20 @@ button:hover, input:hover{
 
 #p_progress{
     color: white;
+    margin-top: 0.7rem;
+    margin-bottom: 2rem;
 }
 
 #loader {
-    border-top: 8px solid rgb(255, 60, 60);
+    border-top: 8px solid rgb(255, 88, 88);
     border-right: 8px solid white;
-    border-bottom: 8px solid rgb(255, 60, 60);
+    border-bottom: 8px solid rgb(255, 88, 88);
     border-left: 8px solid white;
     border-radius: 50%;
     width: 45px;
     height: 45px;
     animation: spin 1s linear infinite;
-    margin: 1rem auto 0 auto;
+    margin: 1rem auto 1.25rem auto;
 }
   
 @keyframes spin {

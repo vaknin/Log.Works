@@ -5,15 +5,30 @@
     </head>
     <body>
       <div id="container">
+
+        <!--Header-->
         <img src="icon.png" id="logo">
         <h1>Log.Works</h1>
-        <p id="p_progress"></p>
-        <div id="loader"></div>
+
+        <!--Loading-->
+        <div class="loading">
+          <p id="p_progress"></p>
+          <div id="loader"></div>
+        </div>
+
+        <!--Case-sensitivity checkbox-->
+        <div id="sensetivity_container">
+          <input type="checkbox" id="cbox_cs" checked='checked'>
+          <label for="cbox_cs" id="cbox_cs_label">Case-sensitive</label>
+        </div>
+
+        <!--Search-->
         <div id="search_container">
-          <p id="p_result">Results: </p>
           <input type="text" id="input_keyword" spellcheck="false">
+          <p id="p_result"> </p>
           <button id="btn_search">Search</button>
         </div>
+
       </div>
      <script src="popup.js"></script>
     </body>

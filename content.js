@@ -16,10 +16,11 @@ class Log{
 let buttons = [];
 let names = [];
 let logs = [];
+let caseSensitive = true;
 
 //#endregion
 
-//#region Communication with popup.js
+//#region Message Passing
 
 //Listen for messages from popup.js
 chrome.runtime.onMessage.addListener(
@@ -33,6 +34,25 @@ chrome.runtime.onMessage.addListener(
             //Send back to popup.js the number of results
             chrome.runtime.sendMessage(results);
         }
+
+        //Popup opened on the wrong page
+        else if (request == 404){
+            window.open('https://logs.travolutionary.com/Session', '_self');
+        }
+
+        //Get information from popup.js regarding case-sensitivity
+        else if (request.action == 'caseSensitivity'){
+
+            //Case sensitive
+            if (request.sensitive){
+                caseSensitive = true;
+            }
+
+            //Not case-sensitive
+            else{
+                caseSensitive = false;
+            }
+        }
 });
 
 
@@ -40,16 +60,20 @@ chrome.runtime.onMessage.addListener(
 
 //#region Populate Logs
 
-window.addEventListener('load', () => {
-    populateLogs();
-});
+//If we're running the sessions website, gather log data
+if (window.location.href.includes('http://logs.travolutionary.com/Session/')){
+    window.addEventListener('load', () => {
+        populateLogs();
+    });
+    
+    window.addEventListener('beforeunload', () => {
+        chrome.runtime.sendMessage('unready');
+    });
+}
 
-window.addEventListener('beforeunload', () => {
-    chrome.runtime.sendMessage('unready');
-});
-
+//Gather info from the page, buttons and elements
 async function populateLogs(){
-    await sleep(1000);
+    await fetch(document.getElementsByClassName('action-hover btn btn-info btn-link'));
     generateNames();
     generateButtons();
 }
@@ -91,33 +115,6 @@ async function populateXML(){
 
 //#endregion
 
-//#region Actions
-
-//Search for a specific keyword
-function search(keyword){
-
-    let count = 0;
-    logs.forEach(log => {
-
-        //Mark text
-        if (keyword != "" && log.data.includes(keyword)){
-            log.element.style.background = 'rgb(147, 123, 206)';
-            log.element.style.border = '1px dashed black';
-            count++;
-        }
-
-        //Unmark text
-        else{
-            log.element.style.background = 'none';
-            log.element.style.border = 'none';
-        }
-    });
-
-    return count;
-}
-
-//#endregion
-
 //#region Helper functions
 
 //Thread.sleep
@@ -125,6 +122,53 @@ async function sleep(ms){
     return new Promise(resolve => {
         setTimeout(resolve, ms);
     });
+}
+
+//Search for a specific keyword
+function search(keyword){
+
+    let count = 0;
+    for (let i = 0; i < logs.length; i++){
+
+        let log = logs[i];
+
+        //Check for empty string
+        if (keyword != ""){
+
+            //Case-sensitive search
+            if (caseSensitive){
+
+                //Look for exact-match
+                if (log.data.includes(keyword)){
+                    log.element.style.background = 'rgb(147, 123, 206)';
+                    log.element.style.border = '1px dashed black';
+                    count++;
+                    continue;
+                }
+            }
+
+            //Not case-sensitive
+            else{
+                //Transform to upper-case in order to compare the two strings
+                let upperCaseData = log.data.toUpperCase();
+                let upperCaseKeyword = keyword.toUpperCase();
+
+                //If there is a match
+                if (upperCaseData.includes(upperCaseKeyword)){
+                    log.element.style.background = 'rgb(147, 123, 206)';
+                    log.element.style.border = '1px dashed black';
+                    count++;
+                    continue;
+                }
+            }
+        }
+
+        //Unmark the element
+        log.element.style.background = 'none';
+        log.element.style.border = 'none';
+    };
+
+    return count;
 }
 
 //#endregion

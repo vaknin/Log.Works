@@ -1,12 +1,12 @@
 {
     "manifest_version": 2,
     "name": "Log.Works",
-    "description": "Search inside sessions with ease.",
+    "description": "Troubleshoot logs with ease, search the entire session at once.",
     "version": "1.0",
     "content_scripts": [
       {
         "matches": [
-          "*://logs.travolutionary.com/Session/*"
+          "<all_urls>"
         ],
         "js": ["content.js"]
       }
@@ -18,7 +18,7 @@
     "browser_action": {
       "default_icon": "icon.png",
       "default_popup": "popup.html",
-      "default_title": "Click on me to search the session!"
+      "default_title": "Click on me to search the enter session!"
     },
     "icons":{
       "16": "icon.png",

@@ -1,11 +1,13 @@
 const url = window.location.href;
 const p_result = document.getElementById('p_result');
-const btn_download = document.getElementById('btn_download');
+const cbox_cs_label = document.getElementById('cbox_cs_label');
+const cbox_cs = document.getElementById('cbox_cs');
 const input_keyword = document.getElementById('input_keyword');
 const btn_search = document.getElementById('btn_search');
 const container = document.getElementById('search_container');
 const p_progress = document.getElementById('p_progress');
 const loader = document.getElementById('loader');
+let activeTab;
 
 //Animate 'loading' text
 
@@ -14,13 +16,29 @@ const loader = document.getElementById('loader');
 //Press 'Enter'
 document.addEventListener('keypress', e => {
     if (e.which == 13){
-        sendMessage('search');
+        msg = {
+            action: 'search',
+            keyword: input_keyword.value,
+        };
+        sendMessage(msg);
     }
 });
 
 //Click Search Button
 btn_search.addEventListener('click', () => {
-    sendMessage('search');
+    msg = {
+        action: 'search',
+        keyword: input_keyword.value,
+    };
+    sendMessage(msg);
+});
+
+cbox_cs.addEventListener('change', () => {
+    let msg = {
+        action: 'caseSensitivity',
+        sensitive: cbox_cs.checked
+    };
+    sendMessage(msg);
 });
 
 //#endregion
@@ -28,16 +46,7 @@ btn_search.addEventListener('click', () => {
 //#region Communication
 
 //Send a message to 'content.js'
-function sendMessage(action){
-
-    let msg;
-
-    if (action == 'search'){
-        msg = {
-            action: 'search',
-            keyword: input_keyword.value,
-        };
-    }
+function sendMessage(msg){
 
     //Send the message
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
@@ -45,13 +54,13 @@ function sendMessage(action){
     });
 }
 
-//Upon opening the popup, check if ready
+//Upon opening the popup, check if ready(message bg.js)
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 
-    let activeTab = tabs[0].id;
+    activeTab = tabs[0];
     let msg = {
         action: 'popup',
-        id: activeTab
+        id: activeTab.id
     };
     chrome.runtime.sendMessage(msg);
  });
@@ -68,7 +77,7 @@ chrome.runtime.onMessage.addListener(
         //Make a search
         else if (request.action == 'search'){
             p_result.style.visibility = 'visible';
-            p_result.innerHTML = `Results: ${request.results}`;
+            p_result.innerHTML = `${request.results} results`;
         }
 
         //Content.js is notifying about it's logs loading progress
@@ -77,7 +86,7 @@ chrome.runtime.onMessage.addListener(
         }
 
         //Close the popup
-        else if (request == 'unready'){
+        else if (request == 'unready' || request == 404){
             window.close();
         }
 });
@@ -89,6 +98,8 @@ chrome.runtime.onMessage.addListener(
 //Get ready
 function ready(){
     input_keyword.style.display = 'inline';
+    cbox_cs_label.style.display = 'inline';
+    cbox_cs.style.display = 'inline';
     btn_search.style.display = 'inline';
     container.style.display = 'flex';
     container.style.flexDirection = 'column';
