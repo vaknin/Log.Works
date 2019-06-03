@@ -89,7 +89,6 @@ async function populateXML(){
 function search(keyword){
 
     let count = 0;
-
     logs.forEach(log => {
 
         //Mark text
@@ -121,11 +120,4 @@ async function sleep(ms){
     });
 }
 
-//Main function
-function main(){
-    //populateLogs();
-}
-
 //#endregion
-
-main();

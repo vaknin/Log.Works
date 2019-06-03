@@ -78,7 +78,7 @@ button:hover, input:hover{
     width: 45px;
     height: 45px;
     animation: spin 2s linear infinite;
-    margin: auto;
+    margin: 1rem auto 0 auto;
   }
   
   @keyframes spin {
