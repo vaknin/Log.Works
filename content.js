@@ -49,7 +49,7 @@ window.addEventListener('beforeunload', () => {
 });
 
 async function populateLogs(){
-    await sleep(3000);
+    await sleep(1000);
     generateNames();
     generateButtons();
 }
@@ -75,6 +75,14 @@ async function populateXML(){
         const response = await fetch(btn.href);
         let log = new Log(btn.href, name, await response.text());
         logs.push(log);
+        let msg = {
+            action: 'progress',
+            progress: {
+                current: i + 1,
+                outof: buttons.length
+            }
+        };
+        chrome.runtime.sendMessage(msg);
     }
 
     //Notify popup.js data is ready
@@ -104,7 +112,6 @@ function search(keyword){
             log.element.style.border = 'none';
         }
     });
-
 
     return count;
 }

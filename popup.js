@@ -4,6 +4,7 @@ const btn_download = document.getElementById('btn_download');
 const input_keyword = document.getElementById('input_keyword');
 const btn_search = document.getElementById('btn_search');
 const container = document.getElementById('search_container');
+const p_progress = document.getElementById('p_progress');
 const loader = document.getElementById('loader');
 
 //Animate 'loading' text
@@ -69,6 +70,11 @@ chrome.runtime.onMessage.addListener(
             p_result.innerHTML = `Results: ${request.results}`;
         }
 
+        //Content.js is notifying about it's logs loading progress
+        else if (request.action == 'progress'){
+            p_progress.innerHTML = `${request.progress.current}/${request.progress.outof}`;
+        }
+
         //Close the popup
         else if (request == 'unready'){
             window.close();
@@ -87,6 +93,7 @@ function ready(){
     container.style.display = 'flex';
     container.style.flexDirection = 'column';
     loader.remove();
+    p_progress.remove();
 }
 
 //#endregion
