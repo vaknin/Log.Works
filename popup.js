@@ -67,6 +67,7 @@ chrome.runtime.onMessage.addListener(
 
         //Make a search
         else if (request.action == 'search'){
+            p_result.style.visibility = 'visible';
             p_result.innerHTML = `Results: ${request.results}`;
         }
 
@@ -87,7 +88,6 @@ chrome.runtime.onMessage.addListener(
 
 //Get ready
 function ready(){
-    p_result.style.display = 'inline';
     input_keyword.style.display = 'inline';
     btn_search.style.display = 'inline';
     container.style.display = 'flex';

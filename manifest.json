@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
-    "name": "Session Assistant",
-    "description": "Manage and troubleshoot sessions with ease.",
+    "name": "Log.Works",
+    "description": "Search inside sessions with ease.",
     "version": "1.0",
     "content_scripts": [
       {
@@ -18,7 +18,7 @@
     "browser_action": {
       "default_icon": "icon.png",
       "default_popup": "popup.html",
-      "default_title": "Download the whole session and search for a specific text!"
+      "default_title": "Click on me to search the session!"
     },
     "icons":{
       "16": "icon.png",

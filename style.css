@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:100');
+@import url('https://fonts.googleapis.com/css?family=Raleway&display=swap');
 
 body{
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Raleway', sans-serif;
     margin: 0;
     user-select: none;
     background: rgb(221, 37, 37);
@@ -28,9 +28,8 @@ h1{
 }
 
 #p_result{
-    font-weight: bold;
-    font-size: 1.2rem;
-    display: none;
+    font-size: 1.1rem;
+    visibility: hidden;
     color: white;
 }
 
@@ -72,7 +71,6 @@ button:hover, input:hover{
     color: white;
 }
 
-/* Loading spinner */
 #loader {
     border-top: 8px solid rgb(255, 60, 60);
     border-right: 8px solid white;
@@ -83,9 +81,9 @@ button:hover, input:hover{
     height: 45px;
     animation: spin 1s linear infinite;
     margin: 1rem auto 0 auto;
-  }
+}
   
-  @keyframes spin {
+@keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-  }
+}
