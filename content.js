@@ -41,8 +41,7 @@ chrome.runtime.onMessage.addListener(
 //#region Populate Logs
 
 window.addEventListener('load', () => {
-    generateNames();
-    generateButtons();
+    populateLogs();
 });
 
 window.addEventListener('beforeunload', () => {
@@ -50,7 +49,7 @@ window.addEventListener('beforeunload', () => {
 });
 
 async function populateLogs(){
-    await sleep(1000);
+    await sleep(3000);
     generateNames();
     generateButtons();
 }
