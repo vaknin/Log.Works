@@ -73,6 +73,7 @@ if (window.location.href.includes('http://logs.travolutionary.com/Session/')){
 
 //Gather info from the page, buttons and elements
 async function populateLogs(){
+    await sleep(1000);
     await fetch(document.getElementsByClassName('action-hover btn btn-info btn-link'));
     generateNames();
     generateButtons();

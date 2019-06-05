@@ -20,6 +20,16 @@
       "default_popup": "popup.html",
       "default_title": "Click on me to search the enter session!"
     },
+    "commands": {
+      "togglePopup": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+L",
+          "windows": "Ctrl+Shift+L",
+          "mac": "Command+Shift+L"
+        },
+        "description": "Imitiate popup click"
+      }
+    },
     "icons":{
       "16": "icon.png",
       "48": "icon.png",

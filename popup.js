@@ -81,7 +81,7 @@ chrome.runtime.onMessage.addListener(
         }
 
         //Content.js is notifying about it's logs loading progress
-        else if (request.action == 'progress'){
+        else if (request.action == 'progress'/* && sender.id == activeTab.id*/){
             p_progress.innerHTML = `${request.progress.current}/${request.progress.outof}`;
         }
 
