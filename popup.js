@@ -7,6 +7,7 @@ const btn_search = document.getElementById('btn_search');
 const container = document.getElementById('search_container');
 const p_progress = document.getElementById('p_progress');
 const loader = document.getElementById('loader');
+let dataIsready = false;
 let activeTab;
 
 //#region Event Listeners
@@ -14,6 +15,10 @@ let activeTab;
 //Press 'Enter'
 document.addEventListener('keypress', e => {
     if (e.which == 13){
+        //If data isn't ready, return
+        if (!dataIsready){
+            return;
+        }
         msg = {
             action: 'search',
             keyword: input_keyword.value,
@@ -95,6 +100,7 @@ chrome.runtime.onMessage.addListener(
 
 //Get ready
 function ready(){
+    dataIsready = true;
     input_keyword.style.display = 'inline';
     cbox_cs_label.style.display = 'inline';
     cbox_cs.style.display = 'inline';

@@ -7,10 +7,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request == 'ready'){
 		tabs[`${sender.tab.id}`] = true;
 
-		//Message popup.js - if it's open
-		chrome.runtime.sendMessage('dataIsReady');
+    //Message popup.js - if it's open
+    chrome.runtime.sendMessage('dataIsReady');
+    
   }
 
+  //When a tab closes, make it 'not' ready
   else if (request == 'unready'){
 		tabs[`${sender.tab.id}`] = false;
   }
@@ -29,17 +31,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 //Check if popup.js is running on the right website
 function check(tabID){
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    tabs.forEach(tab => {
-      if (tab.id == tabID){
-
+      if (tabs[0].id == tabID){
         //If the tab popup was initiated on isn't the sessions page, message popup and notify
-        if (!tab.url.includes('logs.travolutionary.com/Session/')){
+        if (!tabs[0].url.includes('logs.travolutionary.com/Session/')){
           chrome.runtime.sendMessage(404); //Message popup.js
           chrome.tabs.sendMessage(tabs[0].id, 404); //Message content.js
         }
         return;
       }
-    });
  });
 }
 

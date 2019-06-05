@@ -42,9 +42,6 @@ chrome.runtime.onMessage.addListener(
             chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
                 chrome.tabs.remove(tabs[0].id);
               });
-            
-            //window.open('https://logs.travolutionary.com/Session', '_self');
-            //chrome.tabs.remove
         }
 
         //Get information from popup.js regarding case-sensitivity
@@ -64,14 +61,22 @@ chrome.runtime.onMessage.addListener(
 
 //#endregion
 
-//#region Populate Logs
+//#region Event listeners
 
 //If we're running the sessions website, gather log data
 if (window.location.href.includes('logs.travolutionary.com/Session/')){
     window.addEventListener('load', () => {
         populateLogs();
     });
+
+    window.addEventListener('beforeunload', () => {
+        chrome.runtime.sendMessage('unready');
+    });
 }
+
+//#endregion
+
+//#region Populate Logs
 
 //Gather info from the page, buttons and elements
 async function populateLogs(){
