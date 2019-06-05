@@ -9,8 +9,6 @@ const p_progress = document.getElementById('p_progress');
 const loader = document.getElementById('loader');
 let activeTab;
 
-//Animate 'loading' text
-
 //#region Event Listeners
 
 //Press 'Enter'
@@ -80,8 +78,8 @@ chrome.runtime.onMessage.addListener(
             p_result.innerHTML = `${request.results} results`;
         }
 
-        //Content.js is notifying about it's logs loading progress
-        else if (request.action == 'progress'/* && sender.id == activeTab.id*/){
+        //Check log loading progress
+        else if (request.action == 'progress' && sender.tab.id == activeTab.id){
             p_progress.innerHTML = `${request.progress.current}/${request.progress.outof}`;
         }
 

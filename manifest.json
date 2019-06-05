@@ -21,11 +21,9 @@
       "default_title": "Click on me to search the enter session!"
     },
     "commands": {
-      "togglePopup": {
+      "openSessions": {
         "suggested_key": {
-          "default": "Ctrl+Shift+L",
-          "windows": "Ctrl+Shift+L",
-          "mac": "Command+Shift+L"
+          "default": "Ctrl+Shift+1"
         },
         "description": "Imitiate popup click"
       }
@@ -36,6 +34,7 @@
       "128": "icon.png"
     },
     "permissions": [
-      "activeTab"
+      "activeTab",
+      "tabs"
     ]
   }

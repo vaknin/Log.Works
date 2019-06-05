@@ -43,7 +43,21 @@ function check(tabID){
  });
 }
 
-//Keyboard Shortcut
+//Keyboard Shortcut - Ctrl+Shift+1
 chrome.commands.onCommand.addListener(command => {
-  console.log('Command:', command);
+  if (command == 'openSessions'){
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+
+      //Check if the current tab is already open on the sessions page
+      if(tabs[0].url.includes('logs.travolutionary.com/Session')){
+        return;
+      }
+      
+      const options = {
+        url: 'http://logs.travolutionary.com/Session/'
+      };
+      //Move the currently selected tab to the sessions page
+      chrome.tabs.update(tabs[0].id, options);
+   });
+  }
 });

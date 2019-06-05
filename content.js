@@ -36,8 +36,15 @@ chrome.runtime.onMessage.addListener(
         }
 
         //Popup opened on the wrong page
-        else if (request == 404){
-            window.open('https://logs.travolutionary.com/Session', '_self');
+        else if (request == 404 || request == 'openSessionsPage'){
+
+            //Get the current tab
+            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+                chrome.tabs.remove(tabs[0].id);
+              });
+            
+            //window.open('https://logs.travolutionary.com/Session', '_self');
+            //chrome.tabs.remove
         }
 
         //Get information from popup.js regarding case-sensitivity
@@ -55,19 +62,14 @@ chrome.runtime.onMessage.addListener(
         }
 });
 
-
 //#endregion
 
 //#region Populate Logs
 
 //If we're running the sessions website, gather log data
-if (window.location.href.includes('http://logs.travolutionary.com/Session/')){
+if (window.location.href.includes('logs.travolutionary.com/Session/')){
     window.addEventListener('load', () => {
         populateLogs();
-    });
-    
-    window.addEventListener('beforeunload', () => {
-        chrome.runtime.sendMessage('unready');
     });
 }
 
@@ -128,6 +130,22 @@ async function sleep(ms){
 //Search for a specific keyword
 function search(keyword){
 
+    //Mark or unmark an element
+    function mark(log, bool){
+
+        //Mark the given element
+        if (bool){
+            log.element.style.background = '#d93b34';
+            log.element.style.border = '1px solid black';
+        }
+
+        //Unmark the element
+        else{
+            log.element.style.background = 'none';
+            log.element.style.border = 'none';
+        }
+    }
+
     let count = 0;
     for (let i = 0; i < logs.length; i++){
 
@@ -141,8 +159,7 @@ function search(keyword){
 
                 //Look for exact-match
                 if (log.data.includes(keyword)){
-                    log.element.style.background = 'rgb(147, 123, 206)';
-                    log.element.style.border = '1px dashed black';
+                    mark(log, true);
                     count++;
                     continue;
                 }
@@ -156,8 +173,7 @@ function search(keyword){
 
                 //If there is a match
                 if (upperCaseData.includes(upperCaseKeyword)){
-                    log.element.style.background = 'rgb(147, 123, 206)';
-                    log.element.style.border = '1px dashed black';
+                    mark(log, true);
                     count++;
                     continue;
                 }
@@ -165,8 +181,7 @@ function search(keyword){
         }
 
         //Unmark the element
-        log.element.style.background = 'none';
-        log.element.style.border = 'none';
+        mark(log, false);
     };
 
     return count;
