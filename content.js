@@ -80,8 +80,14 @@ if (window.location.href.includes('logs.travolutionary.com/Session/')){
 
 //Gather info from the page, buttons and elements
 async function populateLogs(){
-    await sleep(1000);
-    await fetch(document.getElementsByClassName('action-hover btn btn-info btn-link'));
+
+    //Set up a function to wait until the buttons have loaded
+    await new Promise(async resolve => {
+        while (document.getElementsByClassName('action-hover btn btn-info btn-link').length == 0) {
+            await sleep(100);
+        }
+        resolve();
+    });
     generateNames();
     generateButtons();
 }
@@ -140,14 +146,28 @@ function search(keyword){
 
         //Mark the given element
         if (bool){
+
+            //If the log is already marked, no reason to mark again
+            if (log.marked){
+                return;
+            }
+            log.marked = true;
             log.element.style.background = '#d93b34';
-            log.element.style.border = '1px solid black';
+            log.element.style.border = '2px solid black';
+            log.originalColor = log.element.style.color;
+            log.element.style.color = 'white';
+            log.originalWeight = log.element.style.fontWeight;
+            log.element.style.fontWeight = 'bold';
         }
 
         //Unmark the element
         else{
+            log.marked = false;
             log.element.style.background = 'none';
             log.element.style.border = 'none';
+            log.element.style.color = log.originalColor;
+            log.element.style.fontWeight = log.originalWeight;
+
         }
     }
 
