@@ -14,7 +14,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   //When a tab closes, make it 'not' ready
   else if (request == 'unready'){
     delete tabs[`${sender.tab.id}`];
-		//tabs[`${sender.tab.id}`] = false;
   }
 
   //Popup is asking if content.js is ready, check and respond
