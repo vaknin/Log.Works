@@ -9,18 +9,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     //Message popup.js - if it's open
     chrome.runtime.sendMessage('dataIsReady');
-    
   }
 
   //When a tab closes, make it 'not' ready
   else if (request == 'unready'){
-		tabs[`${sender.tab.id}`] = false;
+    delete tabs[`${sender.tab.id}`];
+		//tabs[`${sender.tab.id}`] = false;
   }
 
   //Popup is asking if content.js is ready, check and respond
   else if (request.action == 'popup'){
 
     check(request.id);
+    
 		//Ready, return response to popup
 		if (tabs[`${request.id}`] == true){
 			chrome.runtime.sendMessage('dataIsReady');
@@ -56,7 +57,7 @@ chrome.commands.onCommand.addListener(command => {
         url: 'http://logs.travolutionary.com/Session/'
       };
       //Move the currently selected tab to the sessions page
-      chrome.tabs.update(tabs[0].id, options);
+      chrome.tabs.create(options);
    });
   }
 });
