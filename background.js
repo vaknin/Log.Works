@@ -109,29 +109,55 @@ chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
   }
 });
 
+
+function openSessionsPage(){
+  chrome.tabs.query({active: true, currentWindow: true}, function(activeTabs) {
+
+    let tabID = activeTabs[0].id;
+    let tab = getTabByID(tabID);
+    
+    const options = {
+      url: 'http://logs.travolutionary.com/Session/',
+      openerTabId: tabID
+    };
+
+    //Create a new tab
+    chrome.tabs.create(options);
+
+    //Communicate with the new tab
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+      
+      //Wait for the tab to load, and then send it the session ID
+      getTabByID(tabs[0].id).waiting = true;
+      getTabByID(tabs[0].id).sessionID = tab.sessionID;
+    });
+ });
+}
+
 //Shortcut listener
 chrome.commands.onCommand.addListener(command => {
   if (command == 'openSessions'){
-    chrome.tabs.query({active: true, currentWindow: true}, function(activeTabs) {
-
-      let tabID = activeTabs[0].id;
-      let tab = getTabByID(tabID);
-      
-      const options = {
-        url: 'http://logs.travolutionary.com/Session/',
-        openerTabId: tabID
-      };
-
-      //Create a new tab
-      chrome.tabs.create(options);
-
-      //Communicate with the new tab
-      chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-        
-        //Wait for the tab to load, and then send it the session ID
-        getTabByID(tabs[0].id).waiting = true;
-        getTabByID(tabs[0].id).sessionID = tab.sessionID;
-      });
-   });
+    openSessionsPage();
   }
 });
+
+//Context menu
+chrome.runtime.onInstalled.addListener(function() {
+  // When the app gets installed, set up the context menus
+  const createProperties = {
+    id: 'selectionContext',
+    title: 'Open Session',
+    contexts: ['selection'],
+  };
+  chrome.contextMenus.create(createProperties);
+  chrome.contextMenus.onClicked.addListener((info, tab) => {
+    chrome.tabs.query({active: true, currentWindow: true}, function(activeTabs){
+      if (info.menuItemId == 'selectionContext' && tab.id == activeTabs[0].id){
+        openSessionsPage();
+      }
+    });
+  });
+});
+
+
+//#endregion
