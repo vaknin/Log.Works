@@ -51,7 +51,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-
 //#region Helper Functions
 
 //Listen for new tabs creation
@@ -109,7 +108,6 @@ chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
   }
 });
 
-
 function openSessionsPage(){
   chrome.tabs.query({active: true, currentWindow: true}, function(activeTabs) {
 
@@ -123,9 +121,6 @@ function openSessionsPage(){
 
     //Create a new tab
     chrome.tabs.create(options);
-
-    let sessionID = tab.sessionID
-    
 
     //Communicate with the new tab
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {

@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Log.Works",
     "description": "Troubleshoot logs with ease, search the entire session at once.",
-    "version": "1.5",
+    "version": "1.42.0",
     "content_scripts": [
       {
         "matches": [
@@ -23,9 +23,10 @@
     "commands": {
       "openSessions": {
         "suggested_key": {
-          "default": "Ctrl+Shift+1"
+          "default": "Alt+Shift+L",
+          "mac": "Command+Shift+L"
         },
-        "description": "Imitiate popup click"
+        "description": "Open the sessions page"
       }
     },
     "icons":{
