@@ -124,6 +124,9 @@ function openSessionsPage(){
     //Create a new tab
     chrome.tabs.create(options);
 
+    let sessionID = tab.sessionID
+    
+
     //Communicate with the new tab
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
       
@@ -158,6 +161,5 @@ chrome.runtime.onInstalled.addListener(function() {
     });
   });
 });
-
 
 //#endregion

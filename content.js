@@ -54,9 +54,17 @@ chrome.runtime.onMessage.addListener(
         else if (request.action == 'findSession'){
             let input = document.getElementById('genSearchBox');
             let searchButton = document.getElementsByClassName('glyphicon glyphicon-search')[0];
-            
-            if(request.sessionID != ""){
-                input.value = request.sessionID;
+            let sessionID = request.sessionID;
+
+            //Make sure session ID isn't empty
+            if(sessionID != ""){
+
+                //Make sure it starts with a forward slash
+                if(sessionID[0] != '/'){
+                    sessionID = '/' + sessionID;
+                }
+                
+                input.value = sessionID;
                 searchButton.click();
             }
         }
@@ -83,40 +91,36 @@ if (window.location.href.includes('logs.travolutionary.com/Session/D')){
 //Running any other page, grab text selection
 else{
 
-    //#region Text Selection
+//#region Text Selection
 
-//Grabs the selected text and sends it to bg.js
-function grabSelection(){
-    //Get selected text
-    let text = window.getSelection().toString();
+    //Grabs the selected text and sends it to bg.js
+    function grabSelection(){
 
-    //Text isn't a session ID, delete it
-    if(!text.includes('/D') || !text.length > 50){
-        text = "";
+        //Get selected text
+        let text = window.getSelection().toString();
+
+        //Text isn't a session ID, delete it
+        if(!text.includes('/D') || text.length < 50){
+            text = "";
+        }
+
+        //Send it to background.js
+        let msg = {
+            action: 'sessionID',
+            sessionID: text
+        };
+        chrome.runtime.sendMessage(msg);
     }
 
-    //Send it to background.js
-    let msg = {
-        action: 'sessionID',
-        sessionID: text
-    };
-    chrome.runtime.sendMessage(msg);
-}
+    //Mouseup
+    document.addEventListener('mouseup', () => {
+        grabSelection();
+    });
 
-//Mouseup
-document.addEventListener('mouseup', () => {
-    grabSelection();
-});
-
-//Mousedown
-document.addEventListener('mousedown', () => {
-    grabSelection();
-});
-
-//Keypress
-document.addEventListener('keypress', () => {
-    grabSelection();
-});
+    //Keyup
+    document.addEventListener('keyup', () => {
+        grabSelection();
+    });
 
 //#endregion
 }
