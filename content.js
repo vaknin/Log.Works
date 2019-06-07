@@ -11,7 +11,7 @@ class Log{
 
 //#endregion
 
-//#region Global variables
+//#region Global variablesq
 
 let buttons = [];
 let names = [];
@@ -22,9 +22,10 @@ let caseSensitive = true;
 
 //#region Message Passing
 
-//Listen for messages from popup.js
+//Listen for messages
 chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
+    async function(request, sender, sendResponse) {
+        
         if (request.action == "search"){
             let results = {
                 action: 'search',
@@ -33,15 +34,6 @@ chrome.runtime.onMessage.addListener(
 
             //Send back to popup.js the number of results
             chrome.runtime.sendMessage(results);
-        }
-
-        //Popup opened on the wrong page
-        else if (request == 404 || request == 'openSessionsPage'){
-
-            //Get the current tab
-            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-                chrome.tabs.remove(tabs[0].id);
-              });
         }
 
         //Get information from popup.js regarding case-sensitivity
@@ -57,6 +49,17 @@ chrome.runtime.onMessage.addListener(
                 caseSensitive = false;
             }
         }
+
+        //Enter the session ID
+        else if (request.action == 'findSession'){
+            let input = document.getElementById('genSearchBox');
+            let searchButton = document.getElementsByClassName('glyphicon glyphicon-search')[0];
+            
+            if(request.sessionID != ""){
+                input.value = request.sessionID;
+                searchButton.click();
+            }
+        }
 });
 
 //#endregion
@@ -64,15 +67,67 @@ chrome.runtime.onMessage.addListener(
 //#region Event listeners
 
 //If we're running the sessions website, gather log data
-if (window.location.href.includes('logs.travolutionary.com/Session/')){
+if (window.location.href.includes('logs.travolutionary.com/Session/D')){
     window.addEventListener('load', () => {
         populateLogs();
     });
 
     window.addEventListener('beforeunload', () => {
-        chrome.runtime.sendMessage('unready');
+        let msg = {
+            action: 'unready'
+        };
+        chrome.runtime.sendMessage(msg);
     });
 }
+
+//Running any other page, grab text selection
+else{
+
+    //#region Text Selection
+
+//Grabs the selected text and sends it to bg.js
+function grabSelection(){
+    //Get selected text
+    let text = window.getSelection().toString();
+
+    //Text isn't a session ID, delete it
+    if(!text.includes('/D') || !text.length > 50){
+        text = "";
+    }
+
+    //Send it to background.js
+    let msg = {
+        action: 'sessionID',
+        sessionID: text
+    };
+    chrome.runtime.sendMessage(msg);
+}
+
+//Mouseup
+document.addEventListener('mouseup', () => {
+    grabSelection();
+});
+
+//Mousedown
+document.addEventListener('mousedown', () => {
+    grabSelection();
+});
+
+//Keypress
+document.addEventListener('keypress', () => {
+    grabSelection();
+});
+
+//#endregion
+}
+
+//Onload - create a new tab object in background.js
+window.addEventListener('load', () => {
+    let msg = {
+        action: 'newTab'
+    };
+    chrome.runtime.sendMessage(msg);
+});
 
 //#endregion
 
@@ -124,7 +179,10 @@ async function populateXML(){
     }
 
     //Notify popup.js data is ready
-    chrome.runtime.sendMessage('ready');
+    let msg = {
+        action: 'ready'
+    };
+    chrome.runtime.sendMessage(msg);
 }
 
 //#endregion

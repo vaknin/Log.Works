@@ -57,10 +57,20 @@ function sendMessage(msg){
     });
 }
 
-//Upon opening the popup, check if ready(message bg.js)
+//Popup onClick
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 
     activeTab = tabs[0];
+
+    //If the tab popup was initiated on isn't the sessions page, open the sessions page in a new tab
+    if (!activeTab.url.includes('logs.travolutionary.com/Session/')){
+        let msg = {
+            action: 'openNewTab'
+        };     
+        return chrome.runtime.sendMessage(msg);
+    }
+
+    //Send popup info to bg.js
     let msg = {
         action: 'popup',
         id: activeTab.id
@@ -89,7 +99,7 @@ chrome.runtime.onMessage.addListener(
         }
 
         //Close the popup
-        else if (request == 'unready' || request == 404){
+        else if (request.action == 'unready'){
             window.close();
         }
 });

@@ -1,63 +1,137 @@
-let tabs = {};
+//Variables
+let tabs = [];
 
-//Communicate with content.js and popup.js
+//Communication
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
+  //Sender's tab ID
+  let tabID;
+  if (sender.tab){
+    tabID = sender.tab.id;
+  }
+
   //receive 'ready' message from content.js
-  if (request == 'ready'){
-		tabs[`${sender.tab.id}`] = true;
+  if (request.action == 'ready'){
+    getTabByID(tabID).ready = true;
 
     //Message popup.js - if it's open
     chrome.runtime.sendMessage('dataIsReady');
   }
 
   //When a tab closes, make it 'not' ready
-  else if (request == 'unready'){
-    delete tabs[`${sender.tab.id}`];
-		//tabs[`${sender.tab.id}`] = false;
+  else if (request.action == 'unready'){
+    let tab = getTabByID(tabID);
+    let i = tabs.indexOf(tab);
+    tabs.splice(i, 1);
   }
 
-  //Popup is asking if content.js is ready, check and respond
+  //Click popup
   else if (request.action == 'popup'){
 
-    check(request.id);
-    
-		//Ready, return response to popup
-		if (tabs[`${request.id}`] == true){
+    //Get the active tab
+    let tab = getTabByID(request.id);
+
+    //Check if the active tab is ready
+    if (tab && tab.ready){
 			chrome.runtime.sendMessage('dataIsReady');
-		}
+    }
+  }
+
+  //Get the selected session ID from content.js
+  else if (request.action == 'sessionID'){
+    getTabByID(tabID).sessionID = request.sessionID;
+  }
+
+  //Clicked on popup from a non-session page - open a new tab of sessions
+  else if (request.action == 'openNewTab'){
+    let options = {
+      url: 'http://logs.travolutionary.com/Session/'
+    };
+    chrome.tabs.create(options);
   }
 });
 
-//Check if popup.js is running on the right website
-function check(tabID){
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      if (tabs[0].id == tabID){
-        //If the tab popup was initiated on isn't the sessions page, message popup and notify
-        if (!tabs[0].url.includes('logs.travolutionary.com/Session/')){
-          chrome.runtime.sendMessage(404); //Message popup.js
-          chrome.tabs.sendMessage(tabs[0].id, 404); //Message content.js
-        }
-        return;
-      }
- });
+
+//#region Helper Functions
+
+//Listen for new tabs creation
+chrome.tabs.onCreated.addListener(tab => {
+  tabs.push({id: tab.id});
+});
+
+//Add all open tabs to the tabs array
+chrome.tabs.query({}, openTabs => {
+  for(t of openTabs){
+    let tab = {
+      id: t.id
+    };
+    tabs.push(tab);
+  };
+});
+
+function getTabByID(id){
+  for (let i = 0; i < tabs.length; i++){
+    if (tabs[i].id == id){
+      return tabs[i];
+    }
+  }
 }
 
-//Keyboard Shortcut - Ctrl+Shift+1
+//Thread.sleep
+async function sleep(ms){
+  return new Promise(resolve => {
+      setTimeout(resolve, ms);
+  });
+}
+
+//#endregion
+
+//#region Commands
+
+//A tab has been updated
+chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
+
+  //If no such tab exists, push it to the tabs array (i.e. page reload)
+  if (!getTabByID(tabID)){
+    tabs.push({id: tabID});
+  }
+
+  //If the session tab is ready
+  if (getTabByID(tabID).waiting && tab.status == 'complete'){
+
+    //Send a message containing the session's ID
+    delete getTabByID(tabID).waiting;
+    let msg = {
+      action: 'findSession',
+      sessionID: getTabByID(tabID).sessionID
+    };
+    chrome.tabs.sendMessage(tabID, msg);
+  }
+});
+
+//Shortcut listener
 chrome.commands.onCommand.addListener(command => {
   if (command == 'openSessions'){
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(activeTabs) {
 
-      //Check if the current tab is already open on the sessions page
-      if(tabs[0].url.includes('logs.travolutionary.com/Session')){
-        return;
-      }
+      let tabID = activeTabs[0].id;
+      let tab = getTabByID(tabID);
       
       const options = {
-        url: 'http://logs.travolutionary.com/Session/'
+        url: 'http://logs.travolutionary.com/Session/',
+        openerTabId: tabID
       };
-      //Move the currently selected tab to the sessions page
+
+      //Create a new tab
       chrome.tabs.create(options);
+
+      //Communicate with the new tab
+      chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        
+        //Wait for the tab to load, and then send it the session ID
+        getTabByID(tabs[0].id).waiting = true;
+        getTabByID(tabs[0].id).sessionID = tab.sessionID;
+      });
    });
   }
 });
