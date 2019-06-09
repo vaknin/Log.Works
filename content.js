@@ -68,6 +68,95 @@ chrome.runtime.onMessage.addListener(
                 searchButton.click();
             }
         }
+
+        //Navigate to the orders tab, and search for the given segment
+        else if (request.action == 'findSegment'){
+
+            let segment = request.segmentID;
+
+            //Log in to a user
+            if (request.loginNeeded){
+
+                //Get the button element
+                let button = document.getElementsByClassName('k-button orange')[0];
+
+                //Log in
+                button.click();
+
+                //Let bg know you logged in
+                chrome.runtime.sendMessage({action: 'loggedIn', segmentID: segment});
+            }
+
+            //The user is already logged in
+            else{
+
+                //Click a button by class name
+                async function clickButton(btnClass, name, computedName){
+                    await new Promise(async resolve => {
+
+                        //Loop until elements load
+                        while(document.getElementsByClassName(btnClass).length == 0){
+                            await sleep(100);
+                        }
+
+                        //Do after elements load:
+
+                        //If there are multiple elements in the HTMLcollection
+                        if (name){
+                            let elements = document.getElementsByClassName(btnClass);
+                            let match = [];
+                            for(let e of elements){
+
+                                //Search for element by computedName
+                                if (computedName){
+                                    if (e.computedName == name){
+                                        match.push(e);
+                                    }
+                                }
+
+                                //Search for element by name
+                                else{
+                                    if (e.innerHTML == name){
+                                        match.push(e);
+                                    }
+                                }
+                            }
+
+                            console.log(match[match.length - 1]);
+                            match[match.length - 1].click();
+                            resolve();
+                        }
+
+                        //Only one element in the HTML collection
+                        else{
+                            let elems = document.getElementsByClassName(btnClass);
+                            elems[elems.length - 1].click();
+                            resolve();
+                        }
+                    });              
+                }
+
+                //Click on 'New Tab'
+                await clickButton('tab-title', '+');
+
+                //Click on 'Manage Orders'
+                await clickButton('glyphicons glyphicons-list-alt');
+
+                //Rest
+                await sleep(2500);
+
+                //Click on the magnifying glass icon
+                await clickButton('toolBarIcon icon-search glyphicon glyphicon-search');
+
+                //Set filter date to none
+                await clickButton('k-item', 'Don\'t filter by date');
+
+                //Enter segment ID
+                if (segment){
+                    await clickButton('k-formatted-value k-input', 'Segment id', true);
+                }
+            }
+        }
 });
 
 //#endregion
@@ -88,49 +177,52 @@ if (window.location.href.includes('logs.travolutionary.com/Session/D')){
     });
 }
 
-//Running any other page, grab text selection
-else{
-
-//#region Text Selection
-
-    //Grabs the selected text and sends it to bg.js
-    function grabSelection(){
-
-        //Get selected text
-        let text = window.getSelection().toString();
-
-        //Text isn't a session ID, delete it
-        if(!text.includes('/D') || text.length < 50){
-            text = "";
-        }
-
-        //Send it to background.js
-        let msg = {
-            action: 'sessionID',
-            sessionID: text
-        };
-        chrome.runtime.sendMessage(msg);
-    }
-
-    //Mouseup
-    document.addEventListener('mouseup', () => {
-        grabSelection();
-    });
-
-    //Keyup
-    document.addEventListener('keyup', () => {
-        grabSelection();
-    });
-
-//#endregion
-}
-
 //Onload - create a new tab object in background.js
 window.addEventListener('load', () => {
     let msg = {
         action: 'newTab'
     };
     chrome.runtime.sendMessage(msg);
+});
+
+//#endregion
+
+//#region Text Selection
+
+//Grabs the selected text and sends it to bg.js
+function grabSelection(){
+
+    //Get selected text
+    let text = window.getSelection().toString();
+    if (text == ""){
+        return;        
+    }
+
+    let msg = {};
+
+    //Text is session ID
+    if(text.includes('/D') && text.length > 50){
+        msg.action = 'sessionID';
+        msg.sessionID = text;
+    }
+
+    //Order.Segment
+    else{
+        msg.action = 'segmentID';
+        msg.segmentID = parseFloat(text);
+    }
+
+    chrome.runtime.sendMessage(msg);
+}
+
+//Mouseup
+document.addEventListener('mouseup', () => {
+    grabSelection();
+});
+
+//Keyup
+document.addEventListener('keyup', () => {
+    grabSelection();
 });
 
 //#endregion

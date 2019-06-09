@@ -21,12 +21,19 @@
       "default_title": "Click on me to search the enter session!"
     },
     "commands": {
-      "openSessions": {
+      "openSession": {
         "suggested_key": {
           "default": "Alt+Shift+L",
           "mac": "Command+Shift+L"
         },
-        "description": "Open the sessions page"
+        "description": "Open the selected session ID"
+      },
+      "openSegment": {
+        "suggested_key": {
+          "default": "Alt+Shift+S",
+          "mac": "Command+Shift+S"
+        },
+        "description": "Open the selected segment"
       }
     },
     "icons":{

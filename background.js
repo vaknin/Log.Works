@@ -42,12 +42,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     getTabByID(tabID).sessionID = request.sessionID;
   }
 
+  //Get the selected session ID from content.js
+  else if (request.action == 'segmentID'){
+
+    let segment = request.segmentID.toString();
+
+    //Check if the segment includes a period, if it does, remove the order id, keep only segment
+    if (segment.includes('.')){
+      let i = segment.indexOf('.');
+      segment = segment.substring(i +1);
+    }
+
+    //Add the segment's ID as a property to the tab object
+    getTabByID(tabID).segmentID = request.segmentID;
+  }
+
   //Clicked on popup from a non-session page - open a new tab of sessions
   else if (request.action == 'openNewTab'){
     let options = {
       url: 'http://logs.travolutionary.com/Session/'
     };
     chrome.tabs.create(options);
+  }
+
+  //Logged in to Ekk
+  else if (request.action == 'loggedIn'){
+    getTabByID(tabID).waiting = true;
+    getTabByID(tabID).segmentID = request.segmentID;
   }
 });
 
@@ -93,33 +114,55 @@ chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
   //If no such tab exists, push it to the tabs array (i.e. page reload)
   if (!getTabByID(tabID)){
     tabs.push({id: tabID});
-  }
+  }  
 
-  //If the session tab is ready
+  //A tab that is waiting for action has fully loaded
   if (getTabByID(tabID).waiting && tab.status == 'complete'){
 
-    //Send a message containing the session's ID
     delete getTabByID(tabID).waiting;
-    let msg = {
-      action: 'findSession',
-      sessionID: getTabByID(tabID).sessionID
-    };
+    let msg = {};
+
+    //New tab is a session
+    if (getTabByID(tabID).sessionID){
+      msg.action = 'findSession';
+      msg.sessionID = getTabByID(tabID).sessionID;
+    }
+
+    //New tab is a segment
+    else{
+
+      //Arrived at login page, attempt to click 'Login'
+      if (tab.url.includes("Account/Login?ReturnUrl=%2f")){
+        msg.loginNeeded = true;
+      }
+      
+      msg.action = 'findSegment';
+      msg.segmentID = getTabByID(tabID).segmentID;
+    }
+
+    //Send a message containing the segment ID
     chrome.tabs.sendMessage(tabID, msg);
   }
 });
 
-function openSessionsPage(){
+function executeCommand(command){
   chrome.tabs.query({active: true, currentWindow: true}, function(activeTabs) {
 
-    let tabID = activeTabs[0].id;
-    let tab = getTabByID(tabID);
+    let tab = getTabByID(activeTabs[0].id);
     
     const options = {
-      url: 'http://logs.travolutionary.com/Session/',
-      openerTabId: tabID
+      openerTabId: activeTabs[0].id
     };
 
-    //Create a new tab
+    if (command == 'session'){
+      options.url = 'http://logs.travolutionary.com/Session/';
+    }
+
+    else{
+      options.url = 'https://ekk.worldtravelink.com/';
+    }
+    
+    //Create the new tab
     chrome.tabs.create(options);
 
     //Communicate with the new tab
@@ -127,31 +170,60 @@ function openSessionsPage(){
       
       //Wait for the tab to load, and then send it the session ID
       getTabByID(tabs[0].id).waiting = true;
-      getTabByID(tabs[0].id).sessionID = tab.sessionID;
+      if (command == 'session'){
+        getTabByID(tabs[0].id).sessionID = tab.sessionID;
+      }
+
+      else{
+        getTabByID(tabs[0].id).segmentID = tab.segmentID;
+      }
     });
  });
 }
 
 //Shortcut listener
 chrome.commands.onCommand.addListener(command => {
-  if (command == 'openSessions'){
-    openSessionsPage();
+  if (command == 'openSession'){
+    executeCommand('session');
+  }
+
+  else if (command == 'openSegment'){
+    executeCommand('segment');
   }
 });
 
 //Context menu
 chrome.runtime.onInstalled.addListener(function() {
+
   // When the app gets installed, set up the context menus
-  const createProperties = {
-    id: 'selectionContext',
+  const sessionProperties = {
+    id: 'sessionContext',
     title: 'Open Session',
     contexts: ['selection'],
   };
-  chrome.contextMenus.create(createProperties);
+
+  const segmentProperties = {
+    id: 'segmentContext',
+    title: 'Open Segment',
+    contexts: ['selection'],
+  };
+
+  //Session
+  chrome.contextMenus.create(sessionProperties);
   chrome.contextMenus.onClicked.addListener((info, tab) => {
     chrome.tabs.query({active: true, currentWindow: true}, function(activeTabs){
-      if (info.menuItemId == 'selectionContext' && tab.id == activeTabs[0].id){
-        openSessionsPage();
+      if (info.menuItemId == 'sessionContext' && tab.id == activeTabs[0].id){
+        executeCommand('session');
+      }
+    });
+  });
+
+  //Segment
+  chrome.contextMenus.create(segmentProperties);
+  chrome.contextMenus.onClicked.addListener((info, tab) => {
+    chrome.tabs.query({active: true, currentWindow: true}, function(activeTabs){
+      if (info.menuItemId == 'segmentContext' && tab.id == activeTabs[0].id){
+        executeCommand('segment');
       }
     });
   });
