@@ -122,8 +122,13 @@ chrome.runtime.onMessage.addListener(
                                 }
                             }
 
-                            console.log(match[match.length - 1]);
-                            match[match.length - 1].click();
+                            let i = match.length - 2;
+                            if (btnClass == 'k-formatted-value k-input'){
+                                match[i].value = segment;
+                                return resolve();
+                            }
+
+                            match[i].click();
                             resolve();
                         }
 
@@ -136,21 +141,26 @@ chrome.runtime.onMessage.addListener(
                     });              
                 }
 
+
                 //Click on 'New Tab'
-                await clickButton('tab-title', '+');
+                let tabs = document.getElementsByClassName('k-tabstrip-items k-reset')[0];
+                tabs.lastChild.click();
 
                 //Click on 'Manage Orders'
                 await clickButton('glyphicons glyphicons-list-alt');
 
-                //Rest
-                await sleep(2500);
+                //Sleep
+                if(tabs.children.length > 1){
+                    await sleep(5000); //find a more elegant way than sleep 3500
+                }
 
                 //Click on the magnifying glass icon
                 await clickButton('toolBarIcon icon-search glyphicon glyphicon-search');
 
                 //Set filter date to none
                 await clickButton('k-item', 'Don\'t filter by date');
-
+                
+                
                 //Enter segment ID
                 if (segment){
                     await clickButton('k-formatted-value k-input', 'Segment id', true);
