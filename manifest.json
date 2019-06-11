@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "Log.Works",
+    "name": "Support.Works",
     "description": "Troubleshoot logs with ease, search the entire session at once.",
-    "version": "1.0",
+    "version": "1.42.0",
     "content_scripts": [
       {
         "matches": [
@@ -21,11 +21,19 @@
       "default_title": "Click on me to search the enter session!"
     },
     "commands": {
-      "openSessions": {
+      "openSession": {
         "suggested_key": {
-          "default": "Ctrl+Shift+1"
+          "default": "Alt+Shift+L",
+          "mac": "Command+Shift+L"
         },
-        "description": "Imitiate popup click"
+        "description": "Open the selected session ID"
+      },
+      "openSegment": {
+        "suggested_key": {
+          "default": "Alt+Shift+S",
+          "mac": "Command+Shift+S"
+        },
+        "description": "Open the selected segment"
       }
     },
     "icons":{
@@ -34,7 +42,6 @@
       "128": "icon.png"
     },
     "permissions": [
-      "activeTab",
-      "tabs"
+      "tabs", "contextMenus"
     ]
   }
