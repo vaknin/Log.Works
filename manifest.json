@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Support.Works",
-    "description": "Troubleshoot logs with ease, search the entire session at once.",
+    "description": "Open segments, search inside sessions, open TFS and more",
     "version": "2.0",
     "content_scripts": [
       {
