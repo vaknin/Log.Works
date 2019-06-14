@@ -62,14 +62,6 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 
     activeTab = tabs[0];
 
-    //If the tab popup was initiated on isn't the sessions page, open the sessions page in a new tab
-    if (!activeTab.url.includes('logs.travolutionary.com/Session/D')){
-        let msg = {
-            action: 'openNewTab'
-        };     
-        return chrome.runtime.sendMessage(msg);
-    }
-
     //Send popup info to bg.js
     let msg = {
         action: 'popup',

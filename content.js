@@ -16,6 +16,7 @@ class Log{
 let buttons = [];
 let names = [];
 let logs = [];
+let clipboard = "";
 let caseSensitive = true;
 
 //#endregion
@@ -24,8 +25,9 @@ let caseSensitive = true;
 
 //Listen for messages
 chrome.runtime.onMessage.addListener(
-    async function(request, sender, sendResponse) {
+    async function(request, sender, response) {
         
+        //Search for a substring in the session
         if (request.action == "search"){
             let results = {
                 action: 'search',
@@ -52,12 +54,50 @@ chrome.runtime.onMessage.addListener(
 
         //Enter the session ID
         else if (request.action == 'findSession'){
-            let input = document.getElementById('genSearchBox');
-            let searchButton = document.getElementsByClassName('glyphicon glyphicon-search')[0];
-            let sessionID = request.sessionID;
+
+            //#region Helper functions
+            function getInput(){
+                return new Promise(async resolve => {
+                    while(!document.getElementById('genSearchBox')){
+                        await sleep(100);
+                    }
+                    resolve(document.getElementById('genSearchBox'));
+                });
+            }
+
+            function getSearchButton(){
+                return new Promise(async resolve => {
+                    while(!document.getElementsByClassName('glyphicon glyphicon-search')[0]){
+                        await sleep(100);
+                    }
+                    resolve(document.getElementsByClassName('glyphicon glyphicon-search')[0]);
+                });
+            }
+            //#endregion
+
+            let sessionID = request.text;   
+
+            //Log in to a user
+            if (request.loginNeeded){
+                
+                //Get the button element
+                let inputs = document.getElementsByTagName('input');
+                for (i of inputs){
+                    if (i.value == 'Log In'){
+                        i.click();
+                        break;
+                    }
+                }
+
+                //Let background.js know you logged in
+                chrome.runtime.sendMessage({action: 'loggedIn', sessionID: sessionID});
+            }
 
             //Make sure session ID isn't empty
-            if(sessionID != ""){
+            else if(sessionID != ""){
+
+                let input = await getInput();
+                let searchButton = await getSearchButton();
 
                 //Make sure it starts with a forward slash
                 if(sessionID[0] != '/'){
@@ -72,7 +112,12 @@ chrome.runtime.onMessage.addListener(
         //Navigate to the orders tab, and search for the given segment
         else if (request.action == 'findSegment'){
 
-            let segment = request.segmentID;
+            let segment = request.text;
+            if (segment.includes('.')){
+      
+                let i = segment.indexOf('.');
+                segment = segment.substring(i +1);
+              }
 
             //Log in to a user
             if (request.loginNeeded){
@@ -148,7 +193,6 @@ chrome.runtime.onMessage.addListener(
                     });              
                 }
 
-
                 //Click on 'New Tab'
                 let tabs = document.getElementsByClassName('k-tabstrip-items k-reset')[0];
                 tabs.lastChild.click();
@@ -201,6 +245,15 @@ chrome.runtime.onMessage.addListener(
                 });
             }
         }
+
+        //bg.js is asking for the clipboard
+        else if (request.action == 'getClipboard'){
+            response({clipboard: clipboard});
+        }
+
+        /*else if (request.action == 'debug'){
+            console.log(request.text);
+        }*/
 });
 
 //#endregion
@@ -214,80 +267,34 @@ if (window.location.href.includes('logs.travolutionary.com/Session/D')){
     });
 
     window.addEventListener('beforeunload', () => {
-        let msg = {
-            action: 'unready'
-        };
-        chrome.runtime.sendMessage(msg);
+        chrome.runtime.sendMessage({action: 'unready'});
     });
 }
 
-else if (window.location.href.includes('ynet.co.il')){
-
-    let titles = [
-        'אפרוחי ענק השתלטו על בניין הכנסת',
-        'מגע ראשון: וושינגטון טוענים שיצרו קשר עם חוצנים',
-        'מחקר חדש: פירות רקובים בריאים יותר',
-        'מחקר: ספורט מקצר את תוחלת החיים'
-    ];
-
-    new Promise(async resolve => {
-        while (document.getElementsByClassName('subtitle').length == 0){
-        }
-
-        let title = document.getElementsByClassName('subtitle')[0];
-        let r = Math.round(Math.random() * (titles.length - 1));
-        title.innerHTML = titles[r];
-        resolve();
-    });
-}
-
-//Onload - create a new tab object in background.js
-window.addEventListener('load', () => {
-    let msg = {
-        action: 'newTab'
-    };
-    chrome.runtime.sendMessage(msg);
-});
-
-//#endregion
-
-//#region Text Selection
-
-//Grabs the selected text and sends it to bg.js
-function grabSelection(){
-
-    //Get selected text
-    let text = window.getSelection().toString();
-    if (text == ""){
-        return;        
-    }
-
-    let msg = {};
-
-    //Text is session ID
-    if(text.includes('/D') && text.length > 50){
-        msg.action = 'sessionID';
-        msg.sessionID = text;
-    }
-
-    //Order.Segment
-    else{
-        msg.action = 'segmentID';
-        msg.segmentID = parseFloat(text);
-    }
-
-    chrome.runtime.sendMessage(msg);
-}
-
-//Mouseup
+//Mouseup - copy to clipboard
 document.addEventListener('mouseup', () => {
-    grabSelection();
+    clipboard = window.getSelection().toString();
 });
 
-//Keyup
+//Keyup - copy to clipboard
 document.addEventListener('keyup', () => {
-    grabSelection();
+    clipboard = window.getSelection().toString();
 });
+
+/*//Debug
+document.addEventListener('keydown', e => {
+    if (e.which == 13){
+
+        //Talk to bg.js
+        chrome.runtime.sendMessage(undefined, {action: 'debug'}, undefined, response => {
+            if (typeof response == 'object'){
+                for(t of response){
+                    console.log(`Tab ${t.id} is${ t.ready ? '' : ' not'} ready`);
+                }
+            }
+        });
+    }
+});*/
 
 //#endregion
 
