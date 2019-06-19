@@ -251,9 +251,9 @@ chrome.runtime.onMessage.addListener(
             response({clipboard: clipboard});
         }
 
-        /*else if (request.action == 'debug'){
+        else if (request.action == 'debug'){
             console.log(request.text);
-        }*/
+        }
 });
 
 //#endregion
@@ -261,7 +261,7 @@ chrome.runtime.onMessage.addListener(
 //#region Event listeners
 
 //If we're running the sessions website, gather log data
-if (window.location.href.includes('logs.travolutionary.com/Session/D')){
+if (window.location.href.includes('travolutionary.com/Session/D')){
     window.addEventListener('load', () => {
         populateLogs();
     });
@@ -281,7 +281,7 @@ document.addEventListener('keyup', () => {
     clipboard = window.getSelection().toString();
 });
 
-/*//Debug
+//Debug
 document.addEventListener('keydown', e => {
     if (e.which == 13){
 
@@ -294,7 +294,7 @@ document.addEventListener('keydown', e => {
             }
         });
     }
-});*/
+});
 
 //#endregion
 

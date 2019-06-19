@@ -29,7 +29,7 @@
       },
       "segment": {
         "suggested_key": {
-          "default": "Alt+S"
+          "default": "Alt+A"
         },
         "description": "Open the selected segment"
       },

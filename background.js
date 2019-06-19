@@ -20,11 +20,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.runtime.sendMessage('dataIsReady');
 
     //Debug
-    chrome.tabs.query({}, tabs => {
-      for (t of tabs){
-        chrome.tabs.sendMessage(t.id, {action: 'debug', text:`tab ${tabID} is ready`});
-      }
-    });
+    debug(`tab ${tabID} is ready`);
   }
 
   //Popup was clicked
@@ -58,11 +54,7 @@ chrome.tabs.onCreated.addListener(tab => {
 chrome.tabs.onRemoved.addListener(tabID => {
   let i = tabs.indexOf(getTabByID(tabID));
   tabs.splice(i, 1);
-  chrome.tabs.query({}, tabs => {
-    for (t of tabs){
-      chrome.tabs.sendMessage(t.id, {action: 'debug', text:`tab ${tabID} has been spliced`});
-    }
-  });
+  debug(`tab ${tabID} has been spliced`);
 });
 
 //Add all open tabs to the tabs array
@@ -92,6 +84,15 @@ async function sleep(ms){
   });
 }
 
+//Send debug messages to content.js
+function debug(text){
+  chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+    for (let t of tabs){
+      chrome.tabs.sendMessage(t.id, {action: 'debug', text})
+    }
+  });
+}
+
 //#endregion
 
 //#region Commands
@@ -99,6 +100,8 @@ async function sleep(ms){
 //Check if the newly opened tab is done loading
 chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
 
+  debug(`${tabID} has been updated.`);
+  
   let tabObject = getTabByID(tabID);
 
   //A tab that is waiting for action has fully loaded
@@ -126,7 +129,7 @@ function executeCommand(command){
     
     //Send a message to the open tab, ask it for it's current clipboard text
     chrome.tabs.sendMessage(tab.id, {action: 'getClipboard'}, undefined, response => {
-      let clipboard = response.clipboard;
+      let clipboard = response ? response.clipboard : "";
       const options = {
         openerTabId: tab.id
       };
@@ -171,8 +174,10 @@ function executeCommand(command){
  });
 }
 
-//Shortcut listener
+//Command listener
 chrome.commands.onCommand.addListener(command => {
+  console.log(command);
+  
   if (command == 'session'){
     executeCommand('session');
   }
