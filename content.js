@@ -52,63 +52,6 @@ chrome.runtime.onMessage.addListener(
             }
         }
 
-        //Enter the session ID
-        else if (request.action == 'findSession'){
-
-            //#region Helper functions
-            function getInput(){
-                return new Promise(async resolve => {
-                    while(!document.getElementById('genSearchBox')){
-                        await sleep(100);
-                    }
-                    resolve(document.getElementById('genSearchBox'));
-                });
-            }
-
-            function getSearchButton(){
-                return new Promise(async resolve => {
-                    while(!document.getElementsByClassName('glyphicon glyphicon-search')[0]){
-                        await sleep(100);
-                    }
-                    resolve(document.getElementsByClassName('glyphicon glyphicon-search')[0]);
-                });
-            }
-            //#endregion
-
-            let sessionID = request.text;   
-
-            //Log in to a user
-            if (request.loginNeeded){
-                
-                //Get the button element
-                let inputs = document.getElementsByTagName('input');
-                for (i of inputs){
-                    if (i.value == 'Log In'){
-                        i.click();
-                        break;
-                    }
-                }
-
-                //Let background.js know you logged in
-                chrome.runtime.sendMessage({action: 'loggedIn', sessionID: sessionID});
-            }
-
-            //Make sure session ID isn't empty
-            else if(sessionID != ""){
-
-                let input = await getInput();
-                let searchButton = await getSearchButton();
-
-                //Make sure it starts with a forward slash
-                if(sessionID[0] != '/'){
-                    sessionID = '/' + sessionID;
-                }
-                
-                input.value = sessionID;
-                searchButton.click();
-            }
-        }
-
         //Navigate to the orders tab, and search for the given segment
         else if (request.action == 'findSegment'){
 
