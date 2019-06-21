@@ -253,27 +253,53 @@ async function generateButtons(){
 
 //Fetch data from the 'View Log' button and create the logs array
 async function populateXML(){
-    for (let i = 0; i < buttons.length; i++){
-        let btn = buttons[i];
-        let name = names[i];
+
+    let count = 1;
+
+    //Fetch data from a log
+    async function fetchData(b){
+
+        //Variables for the button to collect data from
+        let btn = b;
+        let name = names[buttons.indexOf(b)];
+
+        //Fetch info from xml
         const response = await fetch(btn.href);
+
+        //Handle fetch error
+        if (!response){
+            return console.log(`failed to fetch btn #${buttons.indexOf(b)}`);
+        }
+
+        //Parse info to text
         let log = new Log(btn.href, name, await response.text());
+
+        //Handle fetch error
+        if (!log){
+            return console.log(`failed to fetch btn #${buttons.indexOf(b)}`);
+        }
+
+        //Add the information to the logs array
         logs.push(log);
+
+        //Send a progress message
         let msg = {
             action: 'progress',
             progress: {
-                current: i + 1,
+                current: count,
                 outof: buttons.length
             }
         };
         chrome.runtime.sendMessage(msg);
+        count++;
     }
 
-    //Notify popup.js data is ready
-    let msg = {
-        action: 'ready'
-    };
-    chrome.runtime.sendMessage(msg);
+    //Collect data from all buttons in parallel
+    const promises = buttons.map(fetchData);
+    await Promise.all(promises);
+
+    //Communicate that the data is ready
+    chrome.runtime.sendMessage({action: 'ready'});
 }
 
 //#endregion

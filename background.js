@@ -39,16 +39,16 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
     else if (request.action == 'loggedIn') {
         setTab(tabID, waiting, true);
     }
+
+    //Make the tab not ready (in case of refresh or simply closing the window)
+    else if (request.action == 'unready') {
+        if (getTab(tabID, ready)) {
+            setTab(tabID, ready, false);
+        }
+    }
 });
 
 //#region Helper Functions
-
-//Listen for tab closed
-chrome.tabs.onRemoved.addListener(tabID => {
-    if (getTab(tabID, ready)) {
-        setTab(tabID, ready, false);
-    }
-});
 
 //Sleep [ms] seconds
 async function sleep(ms) {

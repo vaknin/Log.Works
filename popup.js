@@ -72,11 +72,19 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 
 //Listen for messages
 chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
+    function(request, sender) {
 
         //Data is ready, enable button
         if (request == 'dataIsReady'){
-            ready();
+            dataIsready = true;
+            input_keyword.style.display = 'inline';
+            cbox_cs_label.style.display = 'inline';
+            cbox_cs.style.display = 'inline';
+            btn_search.style.display = 'inline';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            loader.remove();
+            p_progress.remove();
         }
 
         //Make a search
@@ -85,9 +93,12 @@ chrome.runtime.onMessage.addListener(
             p_result.innerHTML = `${request.results} results`;
         }
 
-        //Check log loading progress
+        //Display loading progress in percentage
         else if (request.action == 'progress' && sender.tab.id == activeTab.id){
-            p_progress.innerHTML = `${request.progress.current}/${request.progress.outof}`;
+            let current = parseInt(request.progress.current);
+            let of = parseInt(request.progress.outof);
+            
+            p_progress.innerHTML = `${Math.round((current/of)*100)}%`;
         }
 
         //Close the popup
@@ -95,22 +106,5 @@ chrome.runtime.onMessage.addListener(
             window.close();
         }
 });
-
-//#endregion
-
-//#region Helper functions
-
-//Get ready
-function ready(){
-    dataIsready = true;
-    input_keyword.style.display = 'inline';
-    cbox_cs_label.style.display = 'inline';
-    cbox_cs.style.display = 'inline';
-    btn_search.style.display = 'inline';
-    container.style.display = 'flex';
-    container.style.flexDirection = 'column';
-    loader.remove();
-    p_progress.remove();
-}
 
 //#endregion
