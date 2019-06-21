@@ -193,10 +193,6 @@ chrome.runtime.onMessage.addListener(
         else if (request.action == 'getClipboard'){
             response({clipboard: clipboard});
         }
-
-        else if (request.action == 'debug'){
-            console.log(request.text);
-        }
 });
 
 //#endregion
@@ -222,21 +218,6 @@ document.addEventListener('mouseup', () => {
 //Keyup - copy to clipboard
 document.addEventListener('keyup', () => {
     clipboard = window.getSelection().toString();
-});
-
-//Debug
-document.addEventListener('keydown', e => {
-    if (e.which == 13){
-
-        //Talk to bg.js
-        chrome.runtime.sendMessage(undefined, {action: 'debug'}, undefined, response => {
-            if (typeof response == 'object'){
-                for(t of response){
-                    console.log(`Tab ${t.id} is${ t.ready ? '' : ' not'} ready`);
-                }
-            }
-        });
-    }
 });
 
 //#endregion

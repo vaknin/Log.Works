@@ -6,7 +6,7 @@ const text = 'text';
 const segmentID = 'segmentID';
 
 //Communication
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender) => {
 
     //Sender's tab ID
     let tabID;
@@ -26,10 +26,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     //Popup was clicked
     else if (request.action == 'popup') {
-        
+
+        let tabIsReady = await getTab(request.id, ready); 
+
         //Check if the active tab is ready
-        if (getTab(request.id, ready)) {
-            
+        if (tabIsReady) {
             chrome.runtime.sendMessage('dataIsReady');
         }
     }
@@ -71,8 +72,6 @@ function createTab(id) {
     return tab;
 }
 
-
-
 //Set the given field of a tab to a value
 function setTab(id, field, value) {
 
@@ -98,17 +97,24 @@ function getTab(id, field, returnEntireTab) {
 
     //Storage API cannot work with integers
     id = id.toString();
-    
-    //Fetch from local storage
-    chrome.storage.local.get(id, item => {
 
-        //Return the entire tab object
-        if (returnEntireTab){
-            return item;
-        }
+    return new Promise(resolve => {
 
-        //Return a specific property
-        else return item[field];
+        //Fetch from local storage
+        chrome.storage.local.get(id, item => {
+
+            //Return the entire tab object
+            if (returnEntireTab){
+                resolve(item);
+            }
+
+            //Return a specific property
+            else{
+                let value = item[id][field];
+                resolve(value);
+            } 
+                
+        });
     });
 }
 
