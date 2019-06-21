@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 
     //receive 'ready' message from content.js
     if (request.action == ready) {
-        setTab(tabID, ready, true);
+        await setTab(tabID, ready, true);
 
         //Message popup.js - if it's open
         chrome.runtime.sendMessage('dataIsReady');
@@ -41,8 +41,10 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
     }
 
     //Make the tab not ready (in case of refresh or simply closing the window)
-    else if (request.action == 'unready') {
-        if (getTab(tabID, ready)) {
+    else if (request.action == 'unready'){
+
+        let tabIsReady = await getTab(tabID, ready);
+        if (tabIsReady) {
             setTab(tabID, ready, false);
         }
     }
@@ -59,7 +61,7 @@ async function sleep(ms) {
 
 //Create a new tab in the local storage
 function createTab(id) {
-
+    
     //Create the tab object, tabs are named after the tab id
     let tab = {
         id
@@ -75,21 +77,27 @@ function createTab(id) {
 //Set the given field of a tab to a value
 function setTab(id, field, value) {
 
-    //Fetch the tab from the local storage
-    let tab = getTab(id, undefined, true);
+    return new Promise(async resolve => {
 
-    //Check if the tab exists
-    if (tab == undefined){
+        //Fetch the tab from the local storage
+        let tab = await getTab(id, undefined, true);
 
-        //The tab doesn't exist, create it
-        tab = createTab(id);
-    }
+        //If the tab does not already exist, create it
+        if (Object.keys(tab).length == 0){
 
-    //Set the property to the given value
-    tab[field] = value;
+            //The tab doesn't exist, create it
+            tab = createTab(id);
+        }
 
-    //Write to local storage
-    chrome.storage.local.set({ [id]: tab} );
+        //The tab exists, access it with its ID 
+        else tab = tab[id];
+
+        tab[field] = value;
+
+
+        //Write to local storage, resolve as a callback
+        chrome.storage.local.set({[id]:tab}, resolve);
+    });
 }
 
 //Gets the tab's field
@@ -110,8 +118,11 @@ function getTab(id, field, returnEntireTab) {
 
             //Return a specific property
             else{
-                let value = item[id][field];
-                resolve(value);
+                item = item[id];
+                if (item){
+                    let value = item[field];
+                    resolve(value);
+                }
             } 
                 
         });
@@ -123,17 +134,19 @@ function getTab(id, field, returnEntireTab) {
 //#region Commands
 
 //Check if the newly opened tab is done loading
-chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener(async (tabID, changeInfo, tab) => {
 
     //A tab that is waiting for action has fully loaded
-    if (getTab(tabID, waiting) && tab.status == 'complete') {
+    let tabIsWaiting = await getTab(tabID, waiting);
+    
+    if (tabIsWaiting && tab.status == 'complete'){
 
         //Remove the 'waiting' property
-        setTab(tabID, waiting, false);
+        await setTab(tabID, waiting, false);
 
         //Create a message object to send to the new tab
         let msg = {
-            text: getTab(tabID, text),
+            text: await getTab(tabID, text),
             loginNeeded: tab.url.includes("Account/Login") ? true : false,
             action: 'findSegment'
         };
@@ -143,11 +156,12 @@ chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
     }
 });
 
-function executeCommand(command) {
+//Execute one of the three keyboard shortcut commands
+function executeCommand(command){
     chrome.tabs.query({
         active: true,
         currentWindow: true
-    }, async function(activeTabs) {
+    }, async function(activeTabs){
 
         let tabID = activeTabs[0].id;
 
@@ -168,8 +182,9 @@ function executeCommand(command) {
                 let date = clipboard.substring(index, index + 9);
 
                 //Dynamically change the log environment for different affiliates, default is 0
-                let affiliateID = clipboard.substring(1, 4);
+                let affiliateID = parseInt(clipboard.substring(1, 4));
                 let environment = 0;
+
                 switch (affiliateID){
 
                     //Snap
@@ -223,8 +238,11 @@ function executeCommand(command) {
                     break;
                 }
 
+                //Dynamically add slash to end of url
+                let slash = clipboard[clipboard.length - 1] == '/' ? "" : '/';
+                
                 //Build the URL
-                options.url = `http://logs.travolutionary.com/Session/${date}/${environment}${clipboard}`;
+                options.url = `http://logs.travolutionary.com/Session/${date}/${environment}${clipboard}${slash}`;
             }
 
             //Open a segment (Go to ekk, log in, and search for the segment)
@@ -246,16 +264,14 @@ function executeCommand(command) {
             }
 
             //Communicate with the new tab
-            chrome.tabs.query({
-                active: true,
-                currentWindow: true
-            }, tabs => {
+            chrome.tabs.query({active: true, currentWindow: true}, async tabs => {
 
                 //Wait for the tab to load, and then send instructions
                 tabID = tabs[0].id;
-                setTab(tabID, waiting, true);
-                setTab(tabID, segmentID, true);
-                setTab(tabID, text, clipboard);
+                
+                await setTab(tabID, waiting, true);
+                await setTab(tabID, segmentID, true);
+                await setTab(tabID, text, clipboard);
             });
         });
     });

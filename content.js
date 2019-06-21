@@ -55,7 +55,8 @@ chrome.runtime.onMessage.addListener(
         //Navigate to the orders tab, and search for the given segment
         else if (request.action == 'findSegment'){
 
-            let segment = request.text;
+            let segment = request.text.toString();
+            
             if (segment.includes('.')){
       
                 let i = segment.indexOf('.');
@@ -191,7 +192,7 @@ chrome.runtime.onMessage.addListener(
 
         //bg.js is asking for the clipboard
         else if (request.action == 'getClipboard'){
-            response({clipboard: clipboard});
+            response({clipboard: clipboard.replace(' ', '')});
         }
 });
 
