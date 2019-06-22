@@ -177,11 +177,12 @@ function executeCommand(command){
             //Open the session ID
             if (command == 'session') {
 
-                //Fetch date
-                let index = clipboard.indexOf('D');
-                let date = clipboard.substring(index, index + 9);
+                //Fetch date from the clip board
+                let index = clipboard.indexOf('D'); //Date is coming after the first 'D' character
+                let date = clipboard.substring(index, index + 9); //The date is 9 characters long, i.e. D20190805
 
                 //Dynamically change the log environment for different affiliates, default is 0
+                clipboard[0] == '/' ? undefined : clipboard = `/${clipboard}`; //Make sure the session ID starts with a slash
                 let affiliateID = parseInt(clipboard.substring(1, 4));
                 let environment = 0;
 

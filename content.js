@@ -288,7 +288,8 @@ async function populateXML(){
             action: 'progress',
             progress: {
                 current: count,
-                outof: buttons.length
+                outof: buttons.length,
+                name: name.innerText
             }
         };
         chrome.runtime.sendMessage(msg);

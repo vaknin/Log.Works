@@ -6,6 +6,7 @@ const input_keyword = document.getElementById('input_keyword');
 const btn_search = document.getElementById('btn_search');
 const container = document.getElementById('search_container');
 const p_progress = document.getElementById('p_progress');
+const p_progressNames = document.getElementById('p_progressNames');
 const loader = document.getElementById('loader');
 let dataIsready = false;
 let activeTab;
@@ -85,6 +86,7 @@ chrome.runtime.onMessage.addListener(
             container.style.flexDirection = 'column';
             loader.remove();
             p_progress.remove();
+            p_progressNames.remove();
         }
 
         //Make a search
@@ -97,8 +99,10 @@ chrome.runtime.onMessage.addListener(
         else if (request.action == 'progress' && sender.tab.id == activeTab.id){
             let current = parseInt(request.progress.current);
             let of = parseInt(request.progress.outof);
-            
-            p_progress.innerHTML = `${Math.round((current/of)*100)}%`;
+
+            console.log(request);
+            p_progressNames.innerText = request.progress.name;
+            p_progress.innerText = `${Math.round((current/of)*100)}%`;
         }
 
         //Close the popup

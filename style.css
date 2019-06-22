@@ -87,10 +87,15 @@ button:hover, input:hover{
     background: rgb(187, 187, 187);
 }
 
+#p_progressNames{
+    color: white;
+    margin-top: 0.3rem;
+    margin-bottom: 0.35rem;
+}
+
 #p_progress{
     color: white;
-    margin-top: 0.7rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 #loader {
