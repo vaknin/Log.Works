@@ -99,8 +99,6 @@ chrome.runtime.onMessage.addListener(
         else if (request.action == 'progress' && sender.tab.id == activeTab.id){
             let current = parseInt(request.progress.current);
             let of = parseInt(request.progress.outof);
-
-            console.log(request);
             p_progressNames.innerText = request.progress.name;
             p_progress.innerText = `${Math.round((current/of)*100)}%`;
         }
