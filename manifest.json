@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Support.Works",
     "description": "Support's multitool, designed to help you work more efficiently",
-    "version": "4.20",
+    "version": "2.00",
     "content_scripts": [
       {
         "matches": [

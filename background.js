@@ -291,17 +291,15 @@ chrome.commands.onCommand.addListener(command => {
 });
 
 //Context menu configuration
-chrome.runtime.onInstalled.addListener(function() {
+chrome.runtime.onStartup.addListener(function() {
 
     //Create the context menu button
     function createContextMenuButton(properties, name) {
         chrome.contextMenus.create(properties);
         chrome.contextMenus.onClicked.addListener((info, tab) => {
-            chrome.tabs.query({
-                active: true,
-                currentWindow: true
-            }, function(activeTabs) {
-                if (info.menuItemId == name && tab.id == activeTabs[0].id) {
+            
+            chrome.tabs.query({active: true, currentWindow: true}, activeTabs => {
+                if (info.menuItemId == name && tab.id == activeTabs[0].id){
                     executeCommand(name);
                 }
             });
