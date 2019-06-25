@@ -293,35 +293,19 @@ chrome.commands.onCommand.addListener(command => {
 //Context menu configuration
 chrome.runtime.onStartup.addListener(function() {
 
-    //Create the context menu button
-    function createContextMenuButton(properties, name) {
-        chrome.contextMenus.create(properties);
-        chrome.contextMenus.onClicked.addListener((info, tab) => {
-            
-            chrome.tabs.query({active: true, currentWindow: true}, activeTabs => {
-                if (info.menuItemId == name && tab.id == activeTabs[0].id){
-                    executeCommand(name);
-                }
-            });
-        });
-    }
-
     //Properties
-
     //Session
     const sessionProperties = {
         id: 'session',
         title: 'Open Session',
         contexts: ['selection'],
     };
-
     //Segment
     const segmentProperties = {
         id: 'segment',
         title: 'Open Segment',
         contexts: ['selection'],
     };
-
     //TFS
     const tfsProperties = {
         id: 'tfs',
@@ -329,10 +313,15 @@ chrome.runtime.onStartup.addListener(function() {
         contexts: ['selection'],
     };
 
-    //Dynamically create the context menu buttons
-    createContextMenuButton(sessionProperties, 'session');
-    createContextMenuButton(segmentProperties, 'segment');
-    createContextMenuButton(tfsProperties, 'tfs');
+    //Create the context menu button
+    chrome.contextMenus.create(sessionProperties);
+    chrome.contextMenus.create(segmentProperties);
+    chrome.contextMenus.create(tfsProperties);
+
+    //Set the onClick listener
+    chrome.contextMenus.onClicked.addListener((info, tab) => {
+        executeCommand(info.menuItemId);
+    });
 });
 
 //#endregion
