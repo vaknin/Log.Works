@@ -13,7 +13,7 @@ let activeTab;
 
 //#region Event Listeners
 
-//Press 'Enter'
+//Press 'Enter' to search
 document.addEventListener('keypress', e => {
     if (e.which == 13){
         //If data isn't ready, return
@@ -28,7 +28,7 @@ document.addEventListener('keypress', e => {
     }
 });
 
-//Click Search Button
+//Click the Search Button
 btn_search.addEventListener('click', () => {
     msg = {
         action: 'search',
@@ -37,6 +37,7 @@ btn_search.addEventListener('click', () => {
     sendMessage(msg);
 });
 
+//Toggle search case-sensitivity
 cbox_cs.addEventListener('change', () => {
     let msg = {
         action: 'caseSensitivity',
@@ -77,6 +78,8 @@ chrome.runtime.onMessage.addListener(
 
         //Data is ready, enable button
         if (request == 'dataIsReady'){
+            console.log('Ready!');
+            
             dataIsready = true;
             input_keyword.style.display = 'inline';
             cbox_cs_label.style.display = 'inline';

@@ -1,34 +1,37 @@
 <html>
     <head>
-      <title>Support.Works</title>
+      <title>Log.Works</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       <link rel="stylesheet" href="./style.css">
     </head>
     <body>
-      <div id="container">
 
-        <!--Header-->
-        <img src="icon.png" id="logo">
-        <h1>Support.Works</h1>
+      <div id="container" class="container">
 
-        <!--Loading-->
-        <div class="loading">
+        <!--Header
+        <!--<img src="icon.png" id="logo">-->
+        <h2>Log.Works</h2>
+
+        <!--Loading
+        <div class="loading d-flex flex-column justify-content-center">
           <p id="p_progress"></p>
           <p id="p_progressNames"></p>
           <div id="loader"></div>
-        </div>
+        </div>-->
 
-        <!--Case-sensitivity checkbox-->
-        <div id="sensetivity_container">
-          <input type="checkbox" id="cbox_cs" checked='checked'>
-          <label for="cbox_cs" id="cbox_cs_label">Case-sensitive</label>
-        </div>
+        <!--Case-sensitivity checkbox
+        <div id="sensetivity_container" class="form-check row">
+          <input class="form-check-input" type="checkbox" id="cbox_cs" checked='checked'>
+          <label class="form-check-label" for="cbox_cs" id="cbox_cs_label">Case-sensitive</label>
+        </div>-->
 
-        <!--Search-->
-        <div id="search_container">
-          <input type="text" id="input_keyword" spellcheck="false">
-          <p id="p_result"> </p>
-          <button id="btn_search">Search</button>
-        </div>
+        <!--Search
+        <div id="search_container" class="mt-3 mb-2">
+          <input class="form-control" type="text" id="input_keyword" spellcheck="false" placeholder="SEARCH">
+          <button class="btn btn-primary btn-sm" id="btn_search"></button>
+        </div>-->
+
+        <!--<p id="p_result"> </p>-->
 
       </div>
      <script src="popup.js"></script>

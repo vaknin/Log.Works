@@ -16,7 +16,6 @@ class Log{
 let buttons = [];
 let names = [];
 let logs = [];
-let clipboard = "";
 let caseSensitive = true;
 
 //#endregion
@@ -51,149 +50,6 @@ chrome.runtime.onMessage.addListener(
                 caseSensitive = false;
             }
         }
-
-        //Navigate to the orders tab, and search for the given segment
-        else if (request.action == 'findSegment'){
-
-            let segment = request.text.toString();
-            
-            if (segment.includes('.')){
-      
-                let i = segment.indexOf('.');
-                segment = segment.substring(i +1);
-              }
-
-            //Log in to a user
-            if (request.loginNeeded){
-
-                //Get the button element
-                let button = document.getElementsByClassName('k-button orange')[0];
-
-                //Log in
-                button.click();
-
-                //Let bg know you logged in
-                chrome.runtime.sendMessage({action: 'loggedIn', segmentID: segment});
-            }
-
-            //The user is already logged in
-            else{
-
-                //Click a button by class name
-                async function clickButton(btnClass, name, computedName){
-                    await new Promise(async resolve => {
-
-                        //Loop until elements load
-                        while(document.getElementsByClassName(btnClass).length == 0){
-                            await sleep(100);
-                        }
-
-                        //Do after elements load:
-
-                        //If there are multiple elements in the HTMLcollection
-                        if (name){
-                            let elements = document.getElementsByClassName(btnClass);
-                            let match = [];
-                            for(let e of elements){
-
-                                //Search for element by computedName
-                                if (computedName){
-                                    if (e.placeholder == name){
-                                        match.push(e);
-                                    }
-                                }
-
-                                //Search for element by name
-                                else{
-                                    if (e.innerHTML == name){
-                                        match.push(e);
-                                    }
-                                }
-                            }
-
-                            let i = match.length - 2;
-                            if (btnClass == 'k-formatted-value k-input'){
-                                let children = match[i].parentElement.children;
-                                let inputs = Array.prototype.filter.call(children, e => e.tagName == 'INPUT');
-                                
-                                for (i of inputs){
-                                    i.setAttribute('aria-valuenow', segment);
-                                    i.value = segment;
-                                }
-                                
-                                return resolve(); //Return the button in the resolve
-                            }
-
-                            match[i].click();
-                            return resolve();
-                        }
-
-                        //Only one element in the HTML collection
-                        else{
-                            let elems = document.getElementsByClassName(btnClass);
-                            elems[elems.length - 1].click();
-                            resolve();
-                        }
-                    });              
-                }
-
-                //Click on 'New Tab'
-                let tabs = document.getElementsByClassName('k-tabstrip-items k-reset')[0];
-                tabs.lastChild.click();
-
-                //Click on 'Manage Orders'
-                await clickButton('glyphicons glyphicons-list-alt');
-
-                //Sleep
-                if(tabs.children.length > 1){
-                    await sleep(3000); //find a more elegant way than sleep
-                }
-
-                //Click on the magnifying glass icon
-                await clickButton('toolBarIcon icon-search glyphicon glyphicon-search');
-
-                //Set filter date to none
-                await clickButton('k-item', 'Don\'t filter by date');
-                
-                //If no segment ID is given, stop here
-                if (!segment){
-                    return;
-                }
-                
-                //Enter the segment ID
-                await clickButton('k-formatted-value k-input', 'Segment id', true);
-
-                //Take a rest
-                await sleep(1500);
-                
-                //Click 'Search'
-                while(document.getElementsByClassName('k-button orange full-width').length == 0){
-                    await sleep(10);
-                }
-
-                let list = document.getElementsByClassName('k-button orange full-width');
-                
-                for (e of list){
-                    if (e.value == 'Search'){
-                        e.click();
-                    }
-                }
-
-                //Click 'info'
-                await new Promise(async resolve => {
-                    while(document.getElementsByClassName('ordersInfo glyphicon glyphicon-info-sign ').length == 0){
-                        await sleep(10);
-                    }
-                    list = document.getElementsByClassName('ordersInfo glyphicon glyphicon-info-sign ');
-                    list[0].click();
-                });
-            }
-        }
-
-        //bg.js is asking for the clipboard
-        else if (request.action == 'getClipboard'){
-            response({clipboard: clipboard.replace(' ', '')});
-        }
 });
 
 //#endregion
@@ -210,16 +66,6 @@ if (window.location.href.includes('travolutionary.com/Session/D')){
         chrome.runtime.sendMessage({action: 'unready'});
     });
 }
-
-//Mouseup - copy to clipboard
-document.addEventListener('mouseup', () => {
-    clipboard = window.getSelection().toString();
-});
-
-//Keyup - copy to clipboard
-document.addEventListener('keyup', () => {
-    clipboard = window.getSelection().toString();
-});
 
 //#endregion
 
@@ -302,6 +148,7 @@ async function populateXML(){
 
     //Communicate that the data is ready
     chrome.runtime.sendMessage({action: 'ready'});
+    console.log('ready!');
 }
 
 //#endregion
