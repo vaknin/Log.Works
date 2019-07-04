@@ -87,9 +87,9 @@ chrome.runtime.onMessage.addListener(
             btn_search.style.display = 'inline';
             container.style.display = 'flex';
             container.style.flexDirection = 'column';
-            loader.remove();
-            p_progress.remove();
-            p_progressNames.remove();
+            //loader.remove();
+            //p_progress.remove();
+            //p_progressNames.remove();
         }
 
         //Make a search

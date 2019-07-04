@@ -125,35 +125,26 @@ body{
     margin: 0;
     padding: 0;
     user-select: none;
-    background: #d93b34;
-    border: 1px solid black;
+    background: #424242;
+    border: 1px solid rgb(36, 36, 36);
 }
 
-#container{
-    width: 260px;
-    height: 260px;
-}
-
-#loader {
-    border-top: 8px solid rgb(255, 88, 88);
-    border-right: 8px solid white;
-    border-bottom: 8px solid rgb(255, 88, 88);
-    border-left: 8px solid white;
+/*#loader {
+    border-top: 8px solid rgb(158, 158, 158);
+    border-right: 8px solid rgb(60, 60, 60);
+    border-bottom: 8px solid rgb(158, 158, 158);
+    border-left: 8px solid rgb(60, 60, 60);
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     animation: spin 1s linear infinite;
-    margin: 1rem auto 1.25rem auto;
 }
   
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
+}*/
 
-/* Hide the following */
-#input_keyword, .btn, #cbox_cs, #cbox_cs_label{
-    display: none;
-}
+
 
 /* d93b34 gimmonix red*/
