@@ -92,7 +92,7 @@ chrome.runtime.onMessage.addListener(
             dataIsready = true;
             loadingDiv.hidden = true;
             searchingDiv.hidden = false;
-            document.getElementById('root_container').style = "width: 280px; height: 235px";
+            document.getElementById('root_container').style = "width: 290px; height: 205px";
         }
 
         //Make a search
@@ -103,7 +103,7 @@ chrome.runtime.onMessage.addListener(
 
         //Display loading progress in percentage
         else if (request.action == 'progress' && sender.tab.id == activeTab.id){
-            document.getElementById('root_container').style = "width: 280px; height: 190px";
+            document.getElementById('root_container').style = "width: 290px; height: 190px";
             let current = parseInt(request.progress.current);
             let of = parseInt(request.progress.outof);
             p_progressNames.innerText = request.progress.name;

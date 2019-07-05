@@ -176,7 +176,7 @@ function search(keyword){
                 return;
             }
             log.marked = true;
-            log.element.style.background = '#4f4f4f';
+            log.element.style.background = '#424242';
             log.element.style.border = '1px solid black';
             log.originalColor = log.element.style.color;
             log.element.style.color = 'white';
@@ -230,7 +230,9 @@ function search(keyword){
         }
 
         //Unmark the element
-        mark(log, false);
+        if (log.marked){
+            mark(log, false);
+        }
     };
 
     return count;
