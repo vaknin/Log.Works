@@ -1,13 +1,18 @@
-const url = window.location.href;
+// Elements
+const loadingDiv = document.getElementById('loading');
+const searchingDiv = document.getElementById('searching');
 const p_result = document.getElementById('p_result');
-const cbox_cs_label = document.getElementById('cbox_cs_label');
-const cbox_cs = document.getElementById('cbox_cs');
 const input_keyword = document.getElementById('input_keyword');
 const btn_search = document.getElementById('btn_search');
-const container = document.getElementById('search_container');
 const p_progress = document.getElementById('p_progress');
 const p_progressNames = document.getElementById('p_progressNames');
-const loader = document.getElementById('loader');
+
+//const cbox_cs_label = document.getElementById('cbox_cs_label');
+//const cbox_cs = document.getElementById('cbox_cs');
+//const container = document.getElementById('search_container');
+//const loader = document.getElementById('loader');
+
+// Variables
 let dataIsready = false;
 let activeTab;
 
@@ -64,6 +69,11 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 
     activeTab = tabs[0];
 
+    if (!activeTab.url.includes('travolutionary.com/Session')){
+        window.open('http://logs.travolutionary.com/Session/', '_blank');
+        window.close();
+    }
+
     //Send popup info to bg.js
     let msg = {
         action: 'popup',
@@ -78,18 +88,11 @@ chrome.runtime.onMessage.addListener(
 
         //Data is ready, enable button
         if (request == 'dataIsReady'){
-            console.log('Ready!');
-            
+
             dataIsready = true;
-            input_keyword.style.display = 'inline';
-            cbox_cs_label.style.display = 'inline';
-            cbox_cs.style.display = 'inline';
-            btn_search.style.display = 'inline';
-            container.style.display = 'flex';
-            container.style.flexDirection = 'column';
-            //loader.remove();
-            //p_progress.remove();
-            //p_progressNames.remove();
+            loadingDiv.hidden = true;
+            searchingDiv.hidden = false;
+            document.getElementById('root_container').style = "width: 280px; height: 235px";
         }
 
         //Make a search
@@ -100,6 +103,7 @@ chrome.runtime.onMessage.addListener(
 
         //Display loading progress in percentage
         else if (request.action == 'progress' && sender.tab.id == activeTab.id){
+            document.getElementById('root_container').style = "width: 280px; height: 190px";
             let current = parseInt(request.progress.current);
             let of = parseInt(request.progress.outof);
             p_progressNames.innerText = request.progress.name;

@@ -11,7 +11,7 @@ class Log{
 
 //#endregion
 
-//#region Global variablesq
+//#region Global variables
 
 let buttons = [];
 let names = [];
@@ -148,7 +148,7 @@ async function populateXML(){
 
     //Communicate that the data is ready
     chrome.runtime.sendMessage({action: 'ready'});
-    console.log('ready!');
+    console.log('content.js is ready');
 }
 
 //#endregion
@@ -176,8 +176,8 @@ function search(keyword){
                 return;
             }
             log.marked = true;
-            log.element.style.background = '#d93b34';
-            log.element.style.border = '2px solid black';
+            log.element.style.background = '#4f4f4f';
+            log.element.style.border = '1px solid black';
             log.originalColor = log.element.style.color;
             log.element.style.color = 'white';
             log.originalWeight = log.element.style.fontWeight;

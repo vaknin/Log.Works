@@ -1,41 +1,45 @@
 <html>
     <head>
       <title>Log.Works</title>
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link rel="stylesheet" href="./bootstrap.min.css">
       <link rel="stylesheet" href="./style.css">
     </head>
     <body>
 
-      <div class="container" style="width:220px; height:220px">
+      <div id="root_container" class="container text-center" style="width: 280px">
 
         <!--Header-->
         <img class="img-fluid mt-3" src="./logo.png" id="logo">
         <hr style="background-color: rgb(63, 63, 63)">
 
-        <!--Case sensitivity checkbox-->
-        <div id="sensetivity_container" class="row ml-5">
-          <input class="form-check-input mt-2" type="checkbox" id="cbox_cs" checked='checked'>
-          <label class="form-check-label text-light" for="cbox_cs" id="cbox_cs_label">Case-sensitive</label>
+        <!--Loading div-->
+        <div id="loading" class="flex-column mt-4">
+          <p class="loading-text mb-2" id="p_progress"></p>
+          <p class="loading-text" id="p_progressNames"></p>
         </div>
 
-        <!--Search-->
-        <div id="search_container" class="mt-3 row d-flex justify-content-center">
-          <input class="form-control col-6" type="text" id="input_keyword" spellcheck="false" placeholder="SEARCH">
-          <button class="" id="btn_search">
-            <img class="img-fluid" src="./search.png">
-          </button>
-        </div>
+        <!--Search div(hidden while loading)-->
+        <div id="searching" hidden>
 
-        <!--<p id="p_result"> </p>-->
+          <!--Checkbox-->
+          <div class="row form-check mt-4">
+            <input class="form-check-input mt-1" type="checkbox" id="cbox_cs" checked='checked'>
+            <label class="form-check-label text-light" for="cbox_cs" id="cbox_cs_label">Case-sensitive</label>
+          </div>
+
+          <!-- Search -->
+          <div class="mt-4 row flex-nowrap justify-content-center">
+            <input type="text" class="form-control col-5" id="input_keyword" spellcheck="false" placeholder="SEARCH" style="margin-bottom: -1px">
+            <input type="image" id="btn_search" src="./search.png">
+          </div>
+
+          <!--Results-->
+          <p class="row justify-content-center mt-3 text-light" id="p_result"></p>
+        </div>
 
       </div>
-     <!--<script src="popup.js"></script>-->
+     <script src="./popup.js"></script>
     </body>
   </html>
 
-  <!--Loading
-        <div class="d-flex justify-content-center">
-          <p id="p_progress"></p>
-          <p id="p_progressNames"></p>
-          <div class="" id="loader"></div>
-        </div>-->
+  

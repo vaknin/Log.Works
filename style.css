@@ -1,125 +1,4 @@
-/*@import url('https://fonts.googleapis.com/css?family=Roboto:100,400');
-
-body{
-    font-family: 'Roboto', sans-serif;
-    font-weight: 100;
-    margin: 0;
-    user-select: none;
-    background: #d93b34;
-    border: 1px solid black;
-}
-
-#container{
-    text-align: center;
-    width: 260px;
-    height: 260px;
-}
-
-#logo{
-    margin-top: 1rem;
-    width: 75px;
-    height: 75px;
-}
-
-h1{
-    font-weight: 400;
-    font-size: 2rem;
-    color: white;
-    margin-top: 1rem;
-    margin-bottom: 1.35rem;
-}
-
-#p_result{
-    font-size: 1.1rem;
-    visibility: hidden;
-    color: white;
-}
-
-#search_container{
-    text-align: center;
-}
-
-#sensetivity_container{
-    position: absolute;
-    left: 85px;
-    top: 172px;
-    text-align: center;
-    z-index: 1;
-}
-
-#cbox_cs_label{
-    color: white;
-    display: none;
-    margin-bottom: 2rem;
-}
-
-#cbox_cs{
-    display: none;
-}
-
-button, input{
-    background: white;
-    margin: auto;
-    padding: 0.4rem;
-    border: 0;
-    transition: background 0.2s ease-in;
-}
-
-button{
-    display: none;
-    margin-bottom: 1rem;
-    border-radius: 5px;
-    font-size: 1.35rem;
-    font-weight: 100;
-    width: 150px;
-    cursor: pointer;
-    -webkit-box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
-    box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
-}
-
-#input_keyword{
-    display: none;
-    margin-top: 1.3rem;
-    border-radius: 2px;
-    width: 90px;
-    cursor: text;
-    -webkit-box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
-    box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
-}
-
-button:hover, input:hover{
-    background: rgb(187, 187, 187);
-}
-
-#p_progressNames{
-    color: white;
-    margin-top: 0.3rem;
-    margin-bottom: 0.35rem;
-}
-
-#p_progress{
-    color: white;
-    margin-bottom: 1rem;
-}
-
-#loader {
-    border-top: 8px solid rgb(255, 88, 88);
-    border-right: 8px solid white;
-    border-bottom: 8px solid rgb(255, 88, 88);
-    border-left: 8px solid white;
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    animation: spin 1s linear infinite;
-    margin: 1rem auto 1.25rem auto;
-}
-  
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}*/
+@import url('https://fonts.googleapis.com/css?family=Roboto');
 
 body{
     margin: 0;
@@ -129,22 +8,30 @@ body{
     border: 1px solid rgb(36, 36, 36);
 }
 
-/*#loader {
-    border-top: 8px solid rgb(158, 158, 158);
-    border-right: 8px solid rgb(60, 60, 60);
-    border-bottom: 8px solid rgb(158, 158, 158);
-    border-left: 8px solid rgb(60, 60, 60);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
+input:focus{
+    outline: none;
 }
-  
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}*/
 
+/* Logo */
+#logo{
+    width: 180px;
+}
 
+/* Loading Text */
+.loading-text{
+    margin: 0;
+    padding: 0;
+    color: rgb(160,160,160);
+    font-weight: 100;
+}
 
-/* d93b34 gimmonix red*/
+/* Magnifying Glass button */
+#btn_search{
+    filter: grayscale(1);
+    border: #3a3a3a solid 1px;
+    border-radius: 6px;
+    margin-top: -2px;
+}
+#btn_search:hover{
+    filter: brightness(0.85) grayscale(1);
+}
