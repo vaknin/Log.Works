@@ -13,6 +13,10 @@ class Log{
 
 //#region Global variables
 
+// Dark/Light theme
+let theme = 'light';
+getTheme();
+
 let buttons = [];
 let names = [];
 let logs = [];
@@ -56,7 +60,7 @@ chrome.runtime.onMessage.addListener(
 
 //#region Event listeners
 
-//If we're running the sessions website, gather log data
+// If we're running the sessions website, gather log data
 if (window.location.href.includes('travolutionary.com/Session/D')){
     window.addEventListener('load', () => {
         populateLogs();
@@ -148,7 +152,6 @@ async function populateXML(){
 
     //Communicate that the data is ready
     chrome.runtime.sendMessage({action: 'ready'});
-    console.log('content.js is ready');
 }
 
 //#endregion
@@ -176,10 +179,10 @@ function search(keyword){
                 return;
             }
             log.marked = true;
-            log.element.style.background = '#424242';
+            log.element.style.background = theme == 'dark' ? '#424242' : 'none';
             log.element.style.border = '1px solid black';
             log.originalColor = log.element.style.color;
-            log.element.style.color = 'rgb(199, 199, 199)';
+            log.element.style.color = 'black';
             log.originalWeight = log.element.style.fontWeight;
             log.element.style.fontWeight = 'bold';
         }
@@ -236,6 +239,18 @@ function search(keyword){
     };
 
     return count;
+}
+
+// returns the stored theme
+function getTheme(){
+    chrome.storage.sync.get(['logworkstheme'], option => {
+
+        if (Object.entries(option).length == 0 || option.logworkstheme == 'light') {
+            theme = 'light';
+        }
+
+        else theme = 'dark';
+    });
 }
 
 //#endregion

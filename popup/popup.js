@@ -11,6 +11,36 @@ const p_progressNames = document.getElementById('p_progressNames');
 let dataIsready = false;
 let activeTab;
 
+// Set theme
+chrome.storage.sync.get(['logworkstheme'], option => {
+
+    let file;
+
+    // Light theme
+    if(Object.entries(option).length == 0 || option.logworkstheme == 'light'){
+        file = 'style_white';
+    }
+
+    // Dark theme
+    else{
+        file = 'style_dark';
+    }
+
+    // Get HTML head element 
+    let head = document.getElementsByTagName('HEAD')[0];  
+  
+    // Create new link Element 
+    let link = document.createElement('link'); 
+
+    // set the attributes for link element  
+    link.rel = 'stylesheet'; 
+    link.type = 'text/css';
+    link.href = `../stylesheets/${file}.css`;  
+
+    // Append link element to HTML head 
+    head.appendChild(link);
+});
+
 //#region Event Listeners
 
 //Press 'Enter' to search
@@ -87,7 +117,7 @@ chrome.runtime.onMessage.addListener(
             dataIsready = true;
             loadingDiv.hidden = true;
             searchingDiv.hidden = false;
-            document.getElementById('root_container').style = "width: 290px; height: 208px";
+            document.getElementById('root_container').style = "width: 300px; height: 208px";
         }
 
         //Make a search
@@ -98,7 +128,7 @@ chrome.runtime.onMessage.addListener(
 
         //Display loading progress in percentage
         else if (request.action == 'progress' && sender.tab.id == activeTab.id){
-            document.getElementById('root_container').style = "width: 290px; height: 140px";
+            document.getElementById('root_container').style = "width: 300px; height: 140px";
             let current = parseInt(request.progress.current);
             let of = parseInt(request.progress.outof);
             p_progressNames.innerText = request.progress.name;

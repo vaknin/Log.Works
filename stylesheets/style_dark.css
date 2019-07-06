@@ -40,13 +40,13 @@ body{
 
 /* Magnifying Glass button */
 #btn_search{
-    filter: grayscale(1);
+    filter: grayscale(1) brightness(95%);
     border: #3a3a3a solid 1px;
     border-radius: 6px;
     margin-top: -2px;
 }
 #btn_search:hover{
-    filter: brightness(0.85) grayscale(1);
+    filter: brightness(0.80) grayscale(1);
 }
 /* Disable search button outline on click */
 input:focus{

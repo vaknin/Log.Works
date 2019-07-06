@@ -4,7 +4,7 @@ const ready = 'ready';
 const waiting = 'waiting';
 const text = 'text';
 
-//Communication
+// Communication
 chrome.runtime.onMessage.addListener(async (request, sender) => {
 
     //Sender's tab ID
@@ -41,6 +41,13 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
         if (tabIsReady) {
             setTab(tabID, ready, false);
         }
+    }
+});
+
+// Open options page on install
+chrome.runtime.onInstalled.addListener(update => {
+    if (update.reason == 'install'){
+        chrome.tabs.create({url: chrome.extension.getURL("./options/options.html")});
     }
 });
 

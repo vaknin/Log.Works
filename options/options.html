@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Options</title>
+  <link rel="stylesheet" href="../stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" href="./options.css">
+</head>
+
+<body>
+
+  <div id="container" class="container">
+
+      <!-- Title -->
+      <h1 class="display-2 mb-2 mt-2"><span id="title" class="badge">Log.Works</span></h1>
+
+      <p id="msg" class="lead mb-3 mt-4">We appreciate you installing the extension,<br> please select a theme color:</p>
+
+      <!-- Theme selection -->
+      <select id="theme" class="form-control w-25 mt-3 mb-3">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+        
+      <!-- Save button -->
+      <button class="btn btn-lg" type="button" id="save">Save</button>
+      <div id="status">Theme changed.</div>
+      
+
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

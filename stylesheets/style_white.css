@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+body{
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    background: #ffffff;
+    border: 1px solid rgb(36, 36, 36);
+}
+
+/* Logo */
+#logo{
+    width: 180px;
+    filter: brightness(0)
+}
+
+/* Loading Text */
+.loading-text{
+    margin: 0;
+    padding: 0;
+    color: #555555;
+    font-weight: 100;
+    font-size: 90%;
+}
+
+/* loading percentage p */
+#p_progress{
+    font-size: 85%;
+}
+
+/* Checkbox cursor pointer */
+.form-check *{
+    cursor: pointer;
+}
+
+/* Checkbox label */
+.form-check-label{
+    font-size: 90%;
+    font-weight: 100;
+    color: #555555 !important;
+}
+
+/* Magnifying Glass button */
+#btn_search{
+    filter: invert(100%);
+}
+#btn_search:hover{
+    filter: invert(80%);
+}
+/* Disable search button outline on click */
+input:focus{
+    outline: none;
+}
+
+/* Results paragraph, i.e. "72 results" */
+#p_result{
+    font-size: 90%;
+    color: #555555 !important;
+}

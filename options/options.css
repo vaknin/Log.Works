@@ -1,0 +1,27 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    user-select: none;
+}
+
+#container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#theme{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+#status{
+    margin-top: 0.75rem;
+    visibility: hidden;
+}
+
+select{
+    text-align: center;
+}
