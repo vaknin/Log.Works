@@ -179,7 +179,7 @@ function search(keyword){
             log.element.style.background = '#424242';
             log.element.style.border = '1px solid black';
             log.originalColor = log.element.style.color;
-            log.element.style.color = 'white';
+            log.element.style.color = 'rgb(199, 199, 199)';
             log.originalWeight = log.element.style.fontWeight;
             log.element.style.fontWeight = 'bold';
         }

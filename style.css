@@ -8,10 +8,6 @@ body{
     border: 1px solid rgb(36, 36, 36);
 }
 
-input:focus{
-    outline: none;
-}
-
 /* Logo */
 #logo{
     width: 180px;
@@ -22,6 +18,23 @@ input:focus{
     margin: 0;
     padding: 0;
     color: rgb(160,160,160);
+    font-weight: 100;
+    font-size: 90%;
+}
+
+/* loading percentage p */
+#p_progress{
+    font-size: 85%;
+}
+
+/* Checkbox cursor pointer */
+.form-check *{
+    cursor: pointer;
+}
+
+/* Checkbox label */
+.form-check-label{
+    font-size: 90%;
     font-weight: 100;
 }
 
@@ -34,4 +47,14 @@ input:focus{
 }
 #btn_search:hover{
     filter: brightness(0.85) grayscale(1);
+}
+/* Disable search button outline on click */
+input:focus{
+    outline: none;
+}
+
+/* Results paragraph, i.e. "72 results" */
+#p_result{
+    font-size: 90%;
+    color: rgb(199, 199, 199) !important;
 }
