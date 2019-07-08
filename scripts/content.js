@@ -181,10 +181,13 @@ function search(keyword){
             log.marked = true;
             log.element.style.background = theme == 'dark' ? '#424242' : 'none';
             log.element.style.border = '1px solid black';
-            log.originalColor = log.element.style.color;
-            log.element.style.color = 'black';
-            log.originalWeight = log.element.style.fontWeight;
-            log.element.style.fontWeight = 'bold';
+
+            // Change the font color, and save the original one
+            let textColor = window.getComputedStyle(log.element).color;
+            if (textColor == 'rgb(51, 51, 51)') {
+                log.element.style.color = 'black';
+                log.element.colorChanged = true;
+            }
         }
 
         //Unmark the element
@@ -192,9 +195,11 @@ function search(keyword){
             log.marked = false;
             log.element.style.background = 'none';
             log.element.style.border = 'none';
-            log.element.style.color = log.originalColor;
-            log.element.style.fontWeight = log.originalWeight;
 
+            // Restore original font color
+            if (log.element.colorChanged) {
+                log.element.style.color = 'rgb(51, 51, 51)';
+            }
         }
     }
 
