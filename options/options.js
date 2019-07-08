@@ -26,63 +26,57 @@ function restore_options() {
 }
 
 // Dynamically change the background color on theme change
-function change_options(e){
-  applyTheme(e.target.value);
-}
-
 function applyTheme(theme){
   let title = document.getElementById('title');
   let save = document.getElementById('save');
   let msg = document.getElementById('msg');
   let status = document.getElementById('status');
-  let darkBtn = 'btn-light';
-  let lightBtn = 'btn-dark';
-  let darkBadge = 'badge-light';
-  let lightBadge = 'badge-dark';
 
   // Light theme
-  if (theme == 'light'){
+  let lightBtn = 'btn-dark';
+  let lightBadge = 'badge-dark';
+  
+  // Dark theme
+  let darkBtn = 'btn-light';
+  let darkBadge = 'badge-light';
 
+  // Travo theme
+  let redBtn = 'btn-danger';
+  let redBadge = 'badge-danger';
+
+  function apply(bg, font, badge, btn){
     // Background
-    document.body.style.backgroundColor = 'white';
+    document.body.style.backgroundColor = bg;
 
-    // Message
-    msg.style.color = 'black';
-
-    // Status
-    status.style.color = 'black';
+    // Font colors
+    msg.style.color = font;
+    status.style.color = font;
 
     //Remove
     title.classList.remove(darkBadge);
+    title.classList.remove(lightBadge);
+    title.classList.remove(redBadge);
     save.classList.remove(darkBtn);
+    save.classList.remove(lightBtn);
+    save.classList.remove(redBtn);
 
     //Add
-    title.classList.add(lightBadge);
-    save.classList.add(lightBtn);
+    title.classList.add(badge);
+    save.classList.add(btn);
   }
+
+  console.log(theme);
+  
+  // Light theme
+  if (theme == 'light') apply('white', 'black', lightBadge, lightBtn);
 
   // Dark theme
-  else{
-    
-    // Background
+  else if (theme == 'dark') apply('#424242', 'white', darkBadge, darkBtn);
 
-    document.body.style.backgroundColor = '#424242';
-    // Message
-    msg.style.color = 'white';
-
-    // Status
-    status.style.color = 'white';
-
-    //Remove
-    title.classList.remove(lightBadge);
-    save.classList.remove(lightBtn);
-    
-    //Add
-    title.classList.add(darkBadge);
-    save.classList.add(darkBtn);
-  }
+  // Red theme
+  else apply('#d93b34', 'white', darkBadge, darkBtn);
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save').addEventListener('click', save_options);
-document.getElementById('theme').addEventListener('change', change_options);
+document.getElementById('theme').addEventListener('change', e => applyTheme(e.target.value));

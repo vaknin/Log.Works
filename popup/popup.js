@@ -22,8 +22,13 @@ chrome.storage.sync.get(['logworkstheme'], option => {
     }
 
     // Dark theme
-    else{
+    else if (option.logworkstheme == 'dark') {
         file = 'style_dark';
+    }
+
+    // Red theme
+    else{
+        file = 'style_red';
     }
 
     // Get HTML head element 

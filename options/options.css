@@ -25,3 +25,8 @@ body{
 select{
     text-align: center;
 }
+
+.badge-dark, .btn-dark{
+    background-color: rgb(200, 200, 200);
+    border: 0;
+}

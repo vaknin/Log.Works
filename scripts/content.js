@@ -112,7 +112,7 @@ async function populateXML(){
 
         //Variables for the button to collect data from
         let btn = b;
-        let name = names[buttons.indexOf(b)];
+        let name = names[buttons.indexOf(b) + 1];
 
         //Fetch info from xml
         const response = await fetch(btn.href);
@@ -179,7 +179,19 @@ function search(keyword){
                 return;
             }
             log.marked = true;
-            log.element.style.background = theme == 'dark' ? '#424242' : 'none';
+            let bgColor;
+            switch(theme){
+                case 'light':
+                    bgColor = 'none';
+                    break;
+                case 'dark':
+                    bgColor = '#626262';
+                    break;
+                default:
+                    bgColor = '#d93b34';
+                    break;
+            }
+            log.element.style.background = bgColor;
             log.element.style.border = '1px solid black';
 
             // Change the font color, and save the original one
@@ -250,11 +262,21 @@ function search(keyword){
 function getTheme(){
     chrome.storage.sync.get(['logworkstheme'], option => {
 
+        // Light
         if (Object.entries(option).length == 0 || option.logworkstheme == 'light') {
             theme = 'light';
         }
 
-        else theme = 'dark';
+        // Dark
+        else if(option.logworkstheme == 'dark'){
+            theme = 'dark';
+        }
+
+        // Red
+        else{
+            theme = 'red';
+        }
+
     });
 }
 
