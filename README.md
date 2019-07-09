@@ -1,14 +1,14 @@
 ## Log.Works  
 ### An open-source chrome extension to search inside travolutionary logs  
-
+  
 ###### The app features three available themes  
-[themes]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Theme Selection"
+[themes]: https://github.com/vaknin/Log.Works/blob/master/showcase/Themes.gif?raw=true "Theme Selection"
 ![Theme Selection][themes]
 
 ###### Upon opening a sessions page, automatically fetch all files  
-[themes]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Loading"
-![Loading][themes]
+[loading]: https://github.com/vaknin/Log.Works/blob/master/showcase/Loading.gif?raw=true "Loading"
+![Loading][loading]
 
 ###### Search inside every logs using a keyword, and optional case-sensitivity  
-[themes]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Demo"
-![Demo][themes]
+[demo]: https://github.com/vaknin/Log.Works/blob/master/showcase/Demo.gif?raw=true "Demo"
+![Demo][demo]
