@@ -197,7 +197,7 @@ function search(keyword){
             // Change the font color, and save the original one
             let textColor = window.getComputedStyle(log.element).color;
             if (textColor == 'rgb(51, 51, 51)') {
-                log.element.style.color = 'black';
+                log.element.style.color = theme == 'light' ? 'black' : 'white';
                 log.element.colorChanged = true;
             }
         }
